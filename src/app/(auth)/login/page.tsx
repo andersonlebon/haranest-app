@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { login } from "../actions";
 import {
   Box,
@@ -10,35 +10,46 @@ import {
   Typography,
   Stack,
 } from "@mui/material";
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const loginSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
 
   const [isPending, startTransition] = useTransition();
-  const [formData, setFormData] = useState({ email: "", password: "" });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const form = new FormData();
-    form.append("email", formData.email);
-    form.append("password", formData.password);
+  const onSubmit = (data: LoginFormData) => {
+    const formData = new FormData();
+    formData.append("email", data.email);
+    formData.append("password", data.password);
 
     startTransition(() => {
-      login(form);
+      login(formData);
     });
   };
 
   return (
     <Box
       component="form"
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       sx={{
         width: "100%",
         maxWidth: 360,
@@ -56,50 +67,57 @@ export default function LoginPage() {
 
       <Stack spacing={2}>
         <TextField
-          id="email"
-          name="email"
           label="Email"
           type="email"
-          disabled={isPending}
-          required
           fullWidth
-          value={formData.email}
-          onChange={handleChange}
-          
+          disabled={isPending}
+          error={!!errors.email}
+          helperText={errors.email?.message}
+          {...register("email")}
         />
         <TextField
-          id="password"
-          name="password"
           label="Password"
           type="password"
-          disabled={isPending}
-          required
           fullWidth
-          value={formData.password}
-          onChange={handleChange}
+          disabled={isPending}
+          error={!!errors.password}
+          helperText={errors.password?.message}
+          {...register("password")}
         />
+
         {!isPending && error && (
           <Typography variant="body2" color="error">
             {error}
           </Typography>
         )}
-        <Stack direction="row" spacing={2} justifyContent="space-between">
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            disabled={isPending}
-            startIcon={isPending ? <CircularProgress size={20} /> : null}
-          >
-            Log in
-          </Button>
-        </Stack>
+
+        <Button
+          type="submit"
+          variant="contained"
+          fullWidth
+          disabled={isPending}
+          startIcon={isPending ? <CircularProgress size={20} /> : null}
+        >
+          Log in
+        </Button>
 
         <Stack>
-          <Button variant="text" fullWidth href="/signup" disabled={isPending}>
+          <Button
+            variant="text"
+            fullWidth
+            href="/signup"
+            type="link"
+            disabled={isPending}
+          >
             Don't have an account?
           </Button>
-          <Button variant="text" fullWidth href="/forgot-password" disabled={isPending}>
+          <Button
+            variant="text"
+            type="link"
+            fullWidth
+            href="/forgot-password"
+            disabled={isPending}
+          >
             Forgot password?
           </Button>
         </Stack>
