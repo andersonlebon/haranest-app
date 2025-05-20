@@ -1,14 +1,13 @@
-import { redirect } from 'next/navigation'
+import PropertyListPage from "@/components/properties/list";
 
-import { createClient } from '@/utils/supabase/server'
 
-export default async function PrivatePage() {
-  const supabase = await createClient()
+export default function PropertiesPage() {
 
-  const { data, error } = await supabase.auth.getUser()
-  if (error || !data?.user) {
-    redirect('/login')
-  }
 
-  return <p>Hello {data.user.email}</p>
+  return (
+    <>
+      {/* <PropertyForm onSubmit={handleNewProperty} /> */}
+      <PropertyListPage />
+    </>
+  );
 }

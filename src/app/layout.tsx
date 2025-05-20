@@ -5,6 +5,11 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import AppProviders from "@/providers";
+import AppAppBar from "@/components/layouts/navbar";
+import { Box, Container } from "@mui/material";
+import Footer from "@/components/layouts/footer";
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 
 
@@ -26,7 +31,16 @@ export default function RootLayout({
       </head>
       <body>
         <AppProviders>
-        {children}
+          <AppAppBar/>
+          <Box display="flex" flexDirection="column" minHeight="100vh">
+            <AppAppBar/>
+              <Box display="flex" flex={1}>
+                <Container maxWidth="xl" sx={{ mt: 16, mb: 32, flexGrow: 1 }}>
+                  {children}
+                </Container>
+              </Box>
+            <Footer />
+          </Box>
         </AppProviders>
       </body>
     </html>

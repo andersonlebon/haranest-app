@@ -50,22 +50,22 @@ export const lightTheme = createTheme({
 
 // Dark Theme
 export const darkTheme = createTheme({
-  ...baseThemeOptions,
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#b69e62',
-    },
-    secondary: {
-      main: '#dcdcdc',
-    },
-    background: {
-      default: '#0c1c38',
-      paper: '#1a1a2e',
-    },
-    text: {
-      primary: '#ffffff',
-      secondary: '#b69e62',
-    },
-  },
+  // ...baseThemeOptions,
+  // palette: {
+  //   mode: 'dark',
+  //   primary: {
+  //     main: '#b69e62',
+  //   },
+  //   secondary: {
+  //     main: '#dcdcdc',
+  //   },
+  //   background: {
+  //     default: '#0c1c38',
+  //     paper: '#1a1a2e',
+  //   },
+  //   text: {
+  //     primary: '#ffffff',
+  //     secondary: '#b69e62',
+  //   },
+  // },
 });

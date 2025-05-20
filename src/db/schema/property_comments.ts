@@ -1,4 +1,4 @@
-import { pgTable, bigserial, uuid, text, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, bigserial, text, timestamp } from "drizzle-orm/pg-core";
 import { properties } from "./properties";
 import { profiles } from "./profiles";
 
@@ -9,7 +9,7 @@ export const propertyComments = pgTable("property_comments", {
     .notNull()
     .references(() => properties.id, { onDelete: "cascade" }),
 
-  profileId: uuid("profile_id")
+  profileId: bigserial("profile_id", { mode: "number" })
     .notNull()
     .references(() => profiles.id, { onDelete: "cascade" }),
 
