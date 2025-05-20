@@ -109,7 +109,7 @@ export default function LoginPage() {
             type="link"
             disabled={isPending}
           >
-            Don't have an account?
+            Don&apos;t have an account?
           </Button>
           <Button
             variant="text"
