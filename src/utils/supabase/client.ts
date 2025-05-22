@@ -7,3 +7,5 @@ export function createClient() {
     SUPABASE_ANON_KEY!
   )
 }
+
+export const supabase = createClient()
