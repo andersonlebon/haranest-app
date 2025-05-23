@@ -95,6 +95,12 @@ export const propertyFeatureEnum = pgEnum("property_feature", [
   "basement"
 ]);
 
+//  enum fro rent or for sell
+export const rentOrSellEnum = pgEnum("rent_or_sell", [
+  "rent",
+  "sell",
+]);
+
 
 export const properties = pgTable("properties", {
   id: bigserial("id", { mode: "number" }).primaryKey(),
@@ -109,9 +115,12 @@ export const properties = pgTable("properties", {
   title: text("title").notNull(),
   description: text("description"),
   price: numeric("price", { precision: 12, scale: 2 }).notNull(),
-  currency: text("currency").default("USD"),
+  currency: text("currency").default("USD").notNull(),
   commission: numeric("commission", { precision: 5, scale: 2 }),
-
+  images: text("images").array().default([]),
+  reviewRate: integer("review_rate").default(0).notNull(),
+  
+  rentOrSell: rentOrSellEnum("rent_or_sell").default("sell").notNull(),
   propertyType: propertyTypeEnum("property_type").notNull(),
   status: propertyStatusEnum("status").default("available").notNull(),
 

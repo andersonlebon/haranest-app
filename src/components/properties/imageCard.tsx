@@ -9,7 +9,7 @@ import {
 import Slider from 'react-slick';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
-import { PropertyMock } from '@/db/types';
+import { PropertyResponseDto } from '@/hooks/useProperties/dto';
 
 
 function NextArrow(props: { onClick?: () => void }) {
@@ -52,7 +52,11 @@ function PrevArrow(props: { onClick?: () => void }) {
   );
 }
 
-export default function ImageSlide({ property }: { property: PropertyMock }) {
+interface ImageSlideProps {
+  property: PropertyResponseDto;
+}
+
+export default function ImageSlide({ property }: ImageSlideProps) {
   const settings = {
     dots: false,
     infinite: true,
@@ -64,10 +68,12 @@ export default function ImageSlide({ property }: { property: PropertyMock }) {
     prevArrow: <PrevArrow />,
   };
 
+  // rentOrSell
+
   return (
        <>
         <Slider {...settings}>
-        {(property.images || ['/images/house.png', '/images/house.png', '/images/house.png', '/images/house.png']).map((img, index) => (
+        {(property.images || ['/images/house.png', '/images/house.png']).map((img, index) => (
 
             <Box
               key={index}
@@ -84,9 +90,9 @@ export default function ImageSlide({ property }: { property: PropertyMock }) {
           ))}
         </Slider>
 
-        {property.badge && (
+        {property.status && (
           <Chip
-            label={property.badge}
+            label={property.status}
             size="small"
             sx={{
               position: 'absolute',
@@ -98,6 +104,23 @@ export default function ImageSlide({ property }: { property: PropertyMock }) {
             }}
           />
         )}
+
+        {
+          property.rentOrSell && (
+            <Chip
+              label={`for ${property.rentOrSell}`}
+              size="small"
+              sx={{
+                position: 'absolute',
+                top: 8,
+                right: '50%',
+                backgroundColor: 'white',
+                fontSize: 12,
+                fontWeight: 500,
+              }}
+            />
+          )
+        }
 
         <IconButton
           sx={{

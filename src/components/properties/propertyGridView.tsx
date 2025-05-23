@@ -1,9 +1,12 @@
 import React from 'react';
 import { Grid } from '@mui/material';
 import PropertyCard from './propertyCard';
-import { PropertyMock } from '@/db/types';
+import { PropertyResponseDto } from '@/hooks/useProperties/dto';
 
-export default function PropertyGridView({ properties }: { properties: PropertyMock[] }) {
+interface PropertyGridViewProps {
+  properties: PropertyResponseDto[];
+}
+export default function PropertyGridView({ properties }: PropertyGridViewProps) {
   return (
     <Grid container spacing={2}>
       {properties.map((property) => (
