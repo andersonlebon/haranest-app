@@ -7,7 +7,7 @@ import { PaginatedResponse, PaginationParams } from '@/components/shared/types';
 export const usePropertiesQuery = (paginationParams: PaginationParams) => {
   const { page, perPage } = paginationParams;
 
-  return useQuery<PaginatedResponse<PropertyResponseDto[]>>({
+  return useQuery<PaginatedResponse<PropertyResponseDto>>({
     queryKey: ['properties', page, perPage],
     queryFn: () => fetchProperties(paginationParams),
   });

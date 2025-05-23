@@ -8,6 +8,20 @@
       "when": 1747399530845,
       "tag": "20250516124530_hesitant_jack_power",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1747922399131,
+      "tag": "20250522135959_slim_hairball",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1747928855584,
+      "tag": "20250522154735_shiny_fantastic_four",
+      "breakpoints": true
     }
   ]
 }
