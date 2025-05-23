@@ -11,6 +11,7 @@ import PropertyListView from '../components/properties/propertyListView';
 import SidebarFilters from '../components/properties/sidebarFilters';
 import TopFilters from '../components/properties/topFilters';
 import { PropertyMock } from '@/db/types';
+import { usePropertiesQuery } from '@/hooks/useProperties';
 
 const properties = [
   { id: 1, title: 'Luxury Villa', price: 500000, type: 'House', bedrooms: 4 },
@@ -28,6 +29,10 @@ const ITEMS_PER_PAGE = 8;
 
 export default function PropertyListPage() {
   const [view, setView] = useState<'grid' | 'list'>('grid');
+  const [filters, setFilters] = useState({
+    page: 1,
+    perPage: ITEMS_PER_PAGE,
+  });
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [page, setPage] = useState(1);
   const isSmall = useMediaQuery((theme: {
@@ -35,6 +40,10 @@ export default function PropertyListPage() {
       down: (key: string) => string;
     };
   }) => theme.breakpoints.down('md'));
+  const { data } = usePropertiesQuery(filters)
+
+  console.log('data', data);
+
 
   const handleViewChange = (_: React.MouseEvent<HTMLElement>, nextView: 'grid' | 'list') => {
     if (nextView !== null) setView(nextView);

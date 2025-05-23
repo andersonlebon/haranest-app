@@ -1,19 +1,17 @@
 "use client"
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/utils/supabase/client';
 import { PropertyResponseDto } from './dto';
+import { fetchProperties } from './services';
+import { PaginatedResponse, PaginationParams } from '@/components/shared/types';
 
-export const usePropertiesQuery = () => {
-  return useQuery<PropertyResponseDto[]>({
-    queryKey: ['properties'],
-    queryFn: async () => {
-      const { data, error } = await supabase.from('properties').select('*');
-      if (error) throw error;
-      return data;
-    },
+export const usePropertiesQuery = (paginationParams: PaginationParams) => {
+  const { page, perPage } = paginationParams;
+
+  return useQuery<PaginatedResponse<PropertyResponseDto[]>>({
+    queryKey: ['properties', page, perPage],
+    queryFn: () => fetchProperties(paginationParams),
   });
-};
+}
 
 // export const useCreateProperty = () => {
 //   const queryClient = useQueryClient();
