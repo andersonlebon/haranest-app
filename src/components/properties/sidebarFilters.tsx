@@ -12,7 +12,6 @@ import {
   FormControlLabel,
   Divider,
   Button,
-  TextField,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -35,6 +34,9 @@ export interface FiltersState {
 interface SidebarFiltersProps  {
   onFilterChange: (filters: FiltersState) => void;
   filters: FiltersState;
+  onApplyFilters: () => void;
+  onResetFilters: () => void;
+  defaultPriceRange: number[];
 }
 
 const AMENITIES = [
@@ -63,6 +65,9 @@ const ACCESSIBILITY_FEATURES = [
 export default function SidebarFilters({
   filters,
   onFilterChange,
+  onApplyFilters,
+  onResetFilters,
+  defaultPriceRange
 }: SidebarFiltersProps) {
   const {
     price,
@@ -87,72 +92,32 @@ export default function SidebarFilters({
       ? list.filter((x) => x !== item)
       : [...list, item];
 
-  const clearAll = () => {
-    onFilterChange({
-      price: [0, 500],
-      bedrooms: 0,
-      bathrooms: 0,
-      amenities: [],
-      features: [],
-    });
-  };
-
   return (
     <Box sx={{ p: 2, maxWidth: 360 }}>
       <Typography variant="h6" gutterBottom>Filters</Typography>
 
     
 {/* Price */}
-<Box mb={3}>
-  <Typography variant="subtitle1">Price range</Typography>
-  <Slider
-    value={price}
-    onChange={(_, newValue) => update({ price: newValue as number[] })}
-    min={0}
-    max={999999999}
-    sx={{ mt: 2 }}
-  />
-
-  <Grid container spacing={2} mt={1}>
-    <Grid size={{xs: 6 }}>
-      <TextField        fullWidth
-        label="Min Price"
-        type="number"
-        value={price[0]}
-        onChange={(e) =>
-          update({
-            price: [Math.min(+e.target.value, price[1]), price[1]],
-          })
-        }
-        InputProps={{
-          startAdornment: <Box mr={1}>$</Box>,
-        }}
-      />
-    </Grid>
-    <Grid size={{xs: 6 }}>
-      <TextField
-        
-        label="Max Price"
-        type="number"
-        value={price[1]}
-        onChange={(e) =>
-          update({
-            price: [price[0], Math.max(+e.target.value, price[0])],
-          })
-        }
-        InputProps={{
-          startAdornment: <Box mr={1}>$</Box>,
-        }}
-      />
-    </Grid>
-  </Grid>
-</Box>
+ {/* Price */}
+ <Box mb={3}>
+        <Typography variant="subtitle1">Price range</Typography>
+        <Slider
+          value={price}
+          onChange={(_, newValue) => update({ price: newValue as number[] })}
+          min={defaultPriceRange[0]}
+          max={defaultPriceRange[1]}
+        />
+        <Grid container spacing={2}>
+          <Grid size={{xs: 6 }}><Box textAlign="start">${formatNumber(price[0])}</Box></Grid>
+          <Grid size={{xs: 6 }}><Box textAlign="end">${formatNumber(price[1])}+</Box></Grid>
+        </Grid>
+      </Box>
 
 
       <Divider sx={{ my: 2 }} />
 
       {/* Bedrooms */}
-      <Box mb={2}>
+      <Box mb={2} justifyContent={'space-between'} display="flex" alignItems="center">
         <Typography variant="subtitle1">Bedrooms</Typography>
         <Box display="flex" alignItems="center" justifyContent="space-between">
           <IconButton onClick={() => update({ bedrooms: Math.max(0, bedrooms - 1) })}>
@@ -166,7 +131,7 @@ export default function SidebarFilters({
       </Box>
 
       {/* Bathrooms */}
-      <Box mb={3}>
+      <Box mb={3} justifyContent={'space-between'} display="flex" alignItems="center">
         <Typography variant="subtitle1">Bathrooms</Typography>
         <Box display="flex" alignItems="center" justifyContent="space-between">
           <IconButton onClick={() => update({ bathrooms: Math.max(0, bathrooms - 1) })}>
@@ -221,8 +186,10 @@ export default function SidebarFilters({
 
       {/* Footer Buttons */}
       <Box display="flex" justifyContent="space-between">
-        <Button onClick={clearAll}>Clear all</Button>
-        <Button variant="contained" onClick={() => onFilterChange({ price, bedrooms, bathrooms, amenities, features })}>
+        <Button onClick={onResetFilters} color="secondary">
+        Clear all
+        </Button>
+        <Button variant="contained" onClick={onApplyFilters} color="primary">
           Show results
         </Button>
       </Box>

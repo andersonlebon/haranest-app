@@ -1,10 +1,11 @@
 "use client"
 import { useQuery } from '@tanstack/react-query';
 import { PropertyResponseDto } from './dto';
-import { fetchProperties } from './services';
-import { PaginatedResponse, PaginationParams } from '@/components/shared/types';
+import { fetchProperties, FiltersParams } from './services';
+import { PaginatedResponse } from '@/components/shared/types';
 
-export const usePropertiesQuery = (paginationParams: PaginationParams) => {
+
+export const usePropertiesQuery = (paginationParams: FiltersParams) => {
   const { page, perPage } = paginationParams;
 
   return useQuery<PaginatedResponse<PropertyResponseDto>>({

@@ -37,3 +37,49 @@ export function formatNumber(num: number): string {
   return num.toString();
 }
 
+export function omitValues<T extends Record<string, any>, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> {
+  const result = { ...obj };
+  keys.forEach(key => delete result[key]);
+  return result;
+}
+
+export const createQueryStrings = (
+  queryParams:  {
+    [key: string]: string | number | boolean | string[] | number[] | null | undefined | any
+  }
+): string => {
+  if (!queryParams) return "";
+
+  const searchParams = new URLSearchParams();
+
+  Object.entries(queryParams).forEach(([key, value]) => {
+    if (
+      value === null ||
+      value === undefined ||
+      value === "" ||
+      value === "none" ||
+      value === "all"
+    ) {
+      return; // Skip these values
+    }
+
+    if (Array.isArray(value)) {
+      value.forEach((v) => {
+        if (
+          v !== null &&
+          v !== undefined &&
+          v !== "" &&
+          v !== "none" &&
+          v !== "all"
+        ) {
+          searchParams.append(key, String(v));
+        }
+      });
+    } else {
+      searchParams.append(key, String(value));
+    }
+  });
+
+  const queryString = searchParams.toString();
+  return queryString ? `?${queryString}` : "";
+};
