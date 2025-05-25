@@ -12,6 +12,7 @@ import {
   FormControlLabel,
   Divider,
   Button,
+  TextField,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -21,8 +22,21 @@ import HotTubIcon from '@mui/icons-material/HotTub';
 import LocalParkingIcon from '@mui/icons-material/LocalParking';
 import KitchenIcon from '@mui/icons-material/Kitchen';
 import DryIcon from '@mui/icons-material/LocalLaundryService';
+import { formatNumber } from '@/utils/formats';
 
-// Constants
+export interface FiltersState {
+  price: number[];
+  bedrooms: number;
+  bathrooms: number;
+  amenities: string[];
+  features: string[];
+}
+
+interface SidebarFiltersProps  {
+  onFilterChange: (filters: FiltersState) => void;
+  filters: FiltersState;
+}
+
 const AMENITIES = [
   { label: 'Wifi', icon: <WifiIcon /> },
   { label: 'Air conditioning', icon: <AcUnitIcon /> },
@@ -46,97 +60,140 @@ const ACCESSIBILITY_FEATURES = [
   'Shower seat/bench',
 ];
 
-export default function SidebarFilters() {
-  const [price, setPrice] = React.useState<number[]>([20, 230]);
-  const [bedrooms, setBedrooms] = React.useState(2);
-
-  const handlePriceChange = (_: Event, newValue: number | number[]) => {
-    setPrice(newValue as number[]);
+export default function SidebarFilters({
+  filters,
+  onFilterChange,
+}: SidebarFiltersProps) {
+  const {
+    price,
+    bedrooms,
+    bathrooms,
+    amenities,
+    features,
+  } = filters;
+  const update = (updated: Partial<FiltersState>) => {
+    onFilterChange({
+      price,
+      bedrooms,
+      bathrooms,
+      amenities,
+      features,
+      ...updated,
+    });
   };
 
-  const handleBedroomsChange = (delta: number) => {
-    setBedrooms(prev => Math.max(0, prev + delta));
+  const toggleItem = (list: string[], item: string) =>
+    list.includes(item)
+      ? list.filter((x) => x !== item)
+      : [...list, item];
+
+  const clearAll = () => {
+    onFilterChange({
+      price: [0, 500],
+      bedrooms: 0,
+      bathrooms: 0,
+      amenities: [],
+      features: [],
+    });
   };
 
   return (
     <Box sx={{ p: 2, maxWidth: 360 }}>
-      <Typography variant="h6" gutterBottom>
-        Filters
-      </Typography>
+      <Typography variant="h6" gutterBottom>Filters</Typography>
 
-      {/* Price Range */}
-      <Box mb={3}>
-        <Typography variant="subtitle1">Price range</Typography>
-        <Slider
-          value={price}
-          onChange={handlePriceChange}
-          min={0}
-          max={500}
-          sx={{ mt: 2 }}
-        />
-        <Grid container spacing={2} mt={1}>
-          <Grid size={{ xs:6 }}>
-            <Box
-              sx={{
-                border: '1px solid #ddd',
-                borderRadius: '999px',
-                py: 1,
-                textAlign: 'center',
-              }}
-            >
-              ${price[0]}
-            </Box>
-          </Grid>
-          <Grid size={{ xs:6 }}>
-            <Box
-              sx={{
-                border: '1px solid #ddd',
-                borderRadius: '999px',
-                py: 1,
-                textAlign: 'center',
-              }}
-            >
-              ${price[1]}+
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
+    
+{/* Price */}
+<Box mb={3}>
+  <Typography variant="subtitle1">Price range</Typography>
+  <Slider
+    value={price}
+    onChange={(_, newValue) => update({ price: newValue as number[] })}
+    min={0}
+    max={999999999}
+    sx={{ mt: 2 }}
+  />
+
+  <Grid container spacing={2} mt={1}>
+    <Grid size={{xs: 6 }}>
+      <TextField        fullWidth
+        label="Min Price"
+        type="number"
+        value={price[0]}
+        onChange={(e) =>
+          update({
+            price: [Math.min(+e.target.value, price[1]), price[1]],
+          })
+        }
+        InputProps={{
+          startAdornment: <Box mr={1}>$</Box>,
+        }}
+      />
+    </Grid>
+    <Grid size={{xs: 6 }}>
+      <TextField
+        
+        label="Max Price"
+        type="number"
+        value={price[1]}
+        onChange={(e) =>
+          update({
+            price: [price[0], Math.max(+e.target.value, price[0])],
+          })
+        }
+        InputProps={{
+          startAdornment: <Box mr={1}>$</Box>,
+        }}
+      />
+    </Grid>
+  </Grid>
+</Box>
+
+
       <Divider sx={{ my: 2 }} />
 
-      {/* Rooms and Beds */}
-      <Box mb={3}>
-        <Typography variant="subtitle1">Rooms and beds</Typography>
-        <Box display="flex" alignItems="center" justifyContent="space-between" my={1}>
-        <Typography variant="subtitle2" pl={2}>Bedrooms</Typography>
-          <Box pl={2}>
-            <IconButton onClick={() => handleBedroomsChange(-1)}>
-              <RemoveIcon />
-            </IconButton>
-            <Typography component="span" mx={1}>
-              {bedrooms}+
-            </Typography>
-            <IconButton onClick={() => handleBedroomsChange(1)}>
-              <AddIcon />
-            </IconButton>
-          </Box>
+      {/* Bedrooms */}
+      <Box mb={2}>
+        <Typography variant="subtitle1">Bedrooms</Typography>
+        <Box display="flex" alignItems="center" justifyContent="space-between">
+          <IconButton onClick={() => update({ bedrooms: Math.max(0, bedrooms - 1) })}>
+            <RemoveIcon />
+          </IconButton>
+          <Typography>{bedrooms}+</Typography>
+          <IconButton onClick={() => update({ bedrooms: bedrooms + 1 })}>
+            <AddIcon />
+          </IconButton>
         </Box>
-        {/* Repeat similar blocks for Beds and Bathrooms if needed */}
+      </Box>
+
+      {/* Bathrooms */}
+      <Box mb={3}>
+        <Typography variant="subtitle1">Bathrooms</Typography>
+        <Box display="flex" alignItems="center" justifyContent="space-between">
+          <IconButton onClick={() => update({ bathrooms: Math.max(0, bathrooms - 1) })}>
+            <RemoveIcon />
+          </IconButton>
+          <Typography>{bathrooms}+</Typography>
+          <IconButton onClick={() => update({ bathrooms: bathrooms + 1 })}>
+            <AddIcon />
+          </IconButton>
+        </Box>
       </Box>
 
       <Divider sx={{ my: 3 }} />
 
       {/* Amenities */}
       <Box mb={3}>
-        <Typography variant="subtitle1" gutterBottom>
-          Amenities
-        </Typography>
+        <Typography variant="subtitle1">Amenities</Typography>
         <Grid container spacing={1}>
-          {AMENITIES.map((amenity, i) => (
-            <Grid key={i}>
+          {AMENITIES.map((item) => (
+            <Grid key={item.label}>
               <Chip
-                icon={amenity.icon}
-                label={amenity.label}
-                variant="outlined"
+                icon={item.icon}
+                label={item.label}
+                clickable
+                variant={amenities.includes(item.label) ? 'filled' : 'outlined'}
+                color={amenities.includes(item.label) ? 'primary' : 'default'}
+                onClick={() => update({ amenities: toggleItem(amenities, item.label) })}
               />
             </Grid>
           ))}
@@ -145,21 +202,29 @@ export default function SidebarFilters() {
 
       <Divider sx={{ my: 3 }} />
 
-      {/* Accessibility */}
+      {/* Accessibility Features */}
       <Box mb={3}>
         <Typography variant="subtitle1">Accessibility features</Typography>
-        {ACCESSIBILITY_FEATURES.map((feature, i) => (
+        {ACCESSIBILITY_FEATURES.map((feature) => (
           <FormControlLabel
-            key={i}
-            control={<Checkbox />}
+            key={feature}
+            control={
+              <Checkbox
+                checked={features.includes(feature)}
+                onChange={() => update({ features: toggleItem(features, feature) })}
+              />
+            }
             label={feature}
           />
         ))}
       </Box>
 
-      <Box display="flex" justifyContent="space-between" mt={2}>
-        <Button>Clear all</Button>
-        <Button variant="contained">Show results</Button>
+      {/* Footer Buttons */}
+      <Box display="flex" justifyContent="space-between">
+        <Button onClick={clearAll}>Clear all</Button>
+        <Button variant="contained" onClick={() => onFilterChange({ price, bedrooms, bathrooms, amenities, features })}>
+          Show results
+        </Button>
       </Box>
     </Box>
   );

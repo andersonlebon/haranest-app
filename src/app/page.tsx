@@ -21,6 +21,11 @@ export default function PropertyListPage() {
   const [filters, setFilters] = useState({
     page: 1,
     perPage: ITEMS_PER_PAGE,
+    price: [0, 1000000],
+    propertyType: 'all',
+    bedrooms: 0,
+    bathrooms: 0,
+    amenities: [],
   });
   const { data: properties } = usePropertiesQuery(filters)
 
@@ -43,6 +48,14 @@ export default function PropertyListPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleFilterChange = (newFilters: any) => {
+    setFilters((prev) => ({
+      ...prev,
+      ...newFilters,
+    }));
+  };
+
+
 
   return (
     <Box p={2} sx={{ width: '100%' }}>
@@ -61,7 +74,14 @@ export default function PropertyListPage() {
       <Grid container spacing={2}>
         {!isSmall && (
           <Grid size={{ xs: 12, md: 3 }}>
-            <SidebarFilters />
+            <SidebarFilters onFilterChange={handleFilterChange} filters={{
+              bedrooms: filters.bedrooms,
+              bathrooms: filters.bathrooms,
+              amenities: filters.amenities,
+              price: filters.price,
+              features: [],
+            }
+            } />
           </Grid>
         )}
         <Grid size={{ xs: 12, md: isSmall ? 12 : 9 }}>
