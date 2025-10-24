@@ -1,7 +1,7 @@
 "use client"
 import { useQuery } from '@tanstack/react-query';
 import { PropertyResponseDto } from './dto';
-import { fetchProperties, FiltersParams } from './services';
+import { fetchProperties, fetchProperty, FiltersParams } from './services';
 import { PaginatedResponse } from '@/components/shared/types';
 
 
@@ -11,6 +11,14 @@ export const usePropertiesQuery = (paginationParams: FiltersParams) => {
   return useQuery<PaginatedResponse<PropertyResponseDto>>({
     queryKey: ['properties', page, perPage],
     queryFn: () => fetchProperties(paginationParams),
+  });
+}
+
+export const usePropertyQuery = (id: number) => {
+  return useQuery<PropertyResponseDto>({
+    queryKey: ['property', id],
+    queryFn: () => fetchProperty(id),
+    enabled: !!id, // Only run the query if id is defined
   });
 }
 

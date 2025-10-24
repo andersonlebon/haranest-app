@@ -20,3 +20,11 @@ export async function fetchProperties(params: FiltersParams): Promise<PaginatedR
   }
   return res.json();
 }
+
+export async function fetchProperty(id: number): Promise<PropertyResponseDto> {
+  const res = await fetch(`/api/properties/${id}`);
+  if (!res.ok) {
+    throw new Error('Failed to fetch property');
+  }
+  return res.json();
+}

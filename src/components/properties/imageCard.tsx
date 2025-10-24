@@ -54,9 +54,10 @@ function PrevArrow(props: { onClick?: () => void }) {
 
 interface ImageSlideProps {
   property: PropertyResponseDto;
+  page: 'list' | 'detail' | 'card'
 }
 
-export default function ImageSlide({ property }: ImageSlideProps) {
+export default function ImageSlide({ property, page='card' }: ImageSlideProps) {
   const settings = {
     dots: false,
     infinite: true,
@@ -82,7 +83,7 @@ export default function ImageSlide({ property }: ImageSlideProps) {
               alt={property.title}
               sx={{
                 width: '100%',
-                height: 200,
+                height: page === 'detail' ? 600 : 200,
                 objectFit: 'cover',
                 borderRadius: 3,
               }}
@@ -90,7 +91,7 @@ export default function ImageSlide({ property }: ImageSlideProps) {
           ))}
         </Slider>
 
-        {property.status && (
+      {  page !== 'detail' && <>{property.status && (
           <Chip
             label={property.status}
             size="small"
@@ -131,7 +132,7 @@ export default function ImageSlide({ property }: ImageSlideProps) {
           }}
         >
           <FavoriteBorderIcon fontSize="small" />
-        </IconButton>
+        </IconButton></>}
       </>
 
     

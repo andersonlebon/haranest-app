@@ -118,7 +118,10 @@ export const properties = pgTable("properties", {
   currency: text("currency").default("USD").notNull(),
   commission: numeric("commission", { precision: 5, scale: 2 }),
   images: text("images").array().default([]),
+  videoPreviewUrl: text("video_preview_url"),
   reviewRate: integer("review_rate").default(0).notNull(),
+  amenities: text("amenities").array().default([]),
+  features: propertyFeatureEnum("features").array().default([]),
   
   rentOrSell: rentOrSellEnum("rent_or_sell").default("sell").notNull(),
   propertyType: propertyTypeEnum("property_type").notNull(),

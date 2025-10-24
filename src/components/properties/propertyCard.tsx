@@ -9,12 +9,18 @@ import {
 import ImageSlide from './imageCard';
 import { PropertyResponseDto } from '@/hooks/useProperties/dto';
 import { formatPrice } from '@/utils/formats';
+import { useRouter } from 'next/navigation';
 
 interface PropertyCardProps {
   property: PropertyResponseDto;
 }
 
 export default function PropertyCard({ property }: PropertyCardProps) {
+  const router = useRouter();
+  const handleClick = () => {
+    router.push(`/properties/${property.id}`);
+  }
+
 
   return (
     <Box
@@ -27,6 +33,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           textDecoration: 'none',
         },
       }}
+      onClick={handleClick}
     >
       <Box sx={{ position: 'relative', borderRadius: 3, overflow: 'hidden' }}>
         <ImageSlide property={property} />
