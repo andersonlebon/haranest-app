@@ -1,7 +1,9 @@
 import { db } from "@/config/drizzle.config";
 import { properties } from "../schema/properties";
+import { DATABASE_URL } from "@/config";
 
 export async function seedProperties() {
+  console.log("🌱 Seeding properties...", DATABASE_URL);
   const seedData: (typeof properties.$inferInsert)[] = [
     {
       profileId: 1,
