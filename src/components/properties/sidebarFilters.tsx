@@ -93,8 +93,10 @@ export default function SidebarFilters({
       : [...list, item];
 
   return (
-    <Box sx={{ p: 2, maxWidth: 360 }}>
-      <Typography variant="h6" gutterBottom>Filters</Typography>
+    <Box sx={{ maxWidth: 360 }}>
+      <Typography variant="h5" fontWeight={700} gutterBottom color="primary.main">
+        Filters
+      </Typography>
 
     
 {/* Price */}
@@ -185,11 +187,35 @@ export default function SidebarFilters({
       </Box>
 
       {/* Footer Buttons */}
-      <Box display="flex" justifyContent="space-between">
-        <Button onClick={onResetFilters} color="secondary">
-        Clear all
+      <Box display="flex" justifyContent="space-between" gap={2} mt={4}>
+        <Button 
+          onClick={onResetFilters} 
+          variant="outlined"
+          color="secondary"
+          sx={{ 
+            borderRadius: 2,
+            textTransform: 'none',
+            fontWeight: 600,
+            px: 3
+          }}
+        >
+          Clear all
         </Button>
-        <Button variant="contained" onClick={onApplyFilters} color="primary">
+        <Button 
+          variant="contained" 
+          onClick={onApplyFilters} 
+          color="primary"
+          sx={{ 
+            borderRadius: 2,
+            textTransform: 'none',
+            fontWeight: 600,
+            px: 3,
+            boxShadow: '0 4px 15px rgba(0, 123, 255, 0.3)',
+            '&:hover': {
+              boxShadow: '0 6px 20px rgba(0, 123, 255, 0.4)',
+            }
+          }}
+        >
           Show results
         </Button>
       </Box>

@@ -12,8 +12,6 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { Suspense } from "react";
 
-
-
 export const metadata: Metadata = {
   title: "Haranest",
   description: "Find Home nested with care",

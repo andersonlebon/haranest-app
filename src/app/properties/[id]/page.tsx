@@ -8,7 +8,7 @@ import PropertyDetails from '@/components/properties/propertyDetails';
 
 export default function PropertyPage() {
   const params = useParams();
-  const id = params?.id as string;
+  const id = Number(params?.id);
 
   const { data: property, isLoading, isError } = usePropertyQuery(id);
 

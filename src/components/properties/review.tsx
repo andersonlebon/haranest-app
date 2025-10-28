@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Typography,
@@ -11,32 +11,20 @@ import {
   Stack,
   Link,
 } from '@mui/material';
+import { getPropertyReviews, postPropertyReview } from '@/hooks/useProperties/services';
 
-const reviews = [
-  {
-    name: 'Maria',
-    location: 'Washington, District of Columbia',
-    date: '2 weeks ago',
-    review: "Truly 5 stars. We loved Esther's apartment. It was very spacious, modern and comfortable. Location is great for Nairobi, and the kids loved the indoor playground and the ...",
-    rating: 5,
-  },
-  {
-    name: 'Ramon',
-    location: '',
-    date: '1 week ago',
-    review: "Esther’s apartment was the perfect place to stay during our visit to Nairobi. It was designed beautifully and had all of the amenities that we needed for our stay. The location was gre...",
-    rating: 5,
-  },
-  {
-    name: 'Kennedy',
-    location: '',
-    date: 'March 2025',
-    review: "I had a wonderful stay at Esther’s Airbnb. The place was clean, comfortable, and well-equipped with everything I needed. Esther was a fantastic host, responsive, friendly, and always ...",
-    rating: 5,
-  },
-];
+interface ReviewItem {
+  id: number;
+  name: string;
+  location?: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
 
 export default function PropertyReviews() {
+  const [items, setItems] = useState<ReviewItem[]>([]);
+  const [loading, setLoading] = useState(false);
   const [newReview, setNewReview] = useState({
     name: '',
     location: '',
@@ -53,10 +41,38 @@ export default function PropertyReviews() {
     setNewReview((prev) => ({ ...prev, rating: value || 0 }));
   };
 
-  const handleSubmit = () => {
-    // Logic to submit the review
-    console.log('New Review:', newReview);
+   const fetchReviews = async () => {
+  try {
+    setLoading(true);
+    const pathParts = window.location.pathname.split('/');
+    const id = pathParts[pathParts.length - 1];
+    const data = await getPropertyReviews(id);
+    setItems(data || []);
+  } catch (err) {
+    console.error('Erreur fetchReviews:', err);
+  } finally {
+    setLoading(false);
+  }
+};
+
+  const handleSubmit = async () => {
+    const handleSubmit = async () => {
+  const pathParts = window.location.pathname.split('/');
+  const id = pathParts[pathParts.length - 1];
+  const payload = {
+    name: newReview.name.trim(),
+    location: newReview.location.trim(),
+    comment: newReview.review.trim(),
+    rating: newReview.rating,
+  };
+  try {
+    await postPropertyReview(id, payload);
     setNewReview({ name: '', location: '', review: '', rating: 0 });
+    fetchReviews();
+  } catch (err) {
+    console.error('Erreur handleSubmit:', err);
+  }
+};
   };
 
   return (
@@ -66,25 +82,25 @@ export default function PropertyReviews() {
         Reviews
       </Typography>
       <Grid container spacing={2}>
-        {reviews.map((review, index) => (
+        {items.map((review) => (
           <Grid size={{ xs: 12, sm: 6, md: 4 }} 
-           key={index}>
+           key={review.id}>
             <Box>
               <Stack direction="row" spacing={2} alignItems="center" mb={1}>
                 <Avatar>{review.name[0]}</Avatar>
                 <Box>
                   <Typography fontWeight={600}>{review.name}</Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {review.location}
+                    {review.location || ''}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {review.date}
+                    {new Date(review.createdAt).toLocaleDateString()}
                   </Typography>
                 </Box>
               </Stack>
               <Rating value={review.rating} readOnly size="small" />
               <Typography variant="body2" mt={1}>
-                {review.review}
+                {review.comment}
               </Typography>
             </Box>
           </Grid>

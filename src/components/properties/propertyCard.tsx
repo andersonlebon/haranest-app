@@ -25,31 +25,71 @@ export default function PropertyCard({ property }: PropertyCardProps) {
   return (
     <Box
       sx={{
-        width: 260,
-        borderRadius: 5,
+        width: '100%',
+        maxWidth: 300,
+        borderRadius: 3,
         overflow: 'hidden',
         cursor: 'pointer',
+        background: 'white',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+        transition: 'all 0.3s ease',
         '&:hover': {
-          textDecoration: 'none',
+          transform: 'translateY(-4px)',
+          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.15)',
         },
       }}
       onClick={handleClick}
     >
       <Box sx={{ position: 'relative', borderRadius: 3, overflow: 'hidden' }}>
-        <ImageSlide property={property} />
+        <ImageSlide property={property} page="card" />
       </Box>
 
-      <Box mt={1} py={2}>
-        <Typography fontSize={14} fontWeight={500} noWrap>
+      <Box sx={{ p: 2 }}>
+        <Typography 
+          fontSize={16} 
+          fontWeight={600} 
+          sx={{ 
+            mb: 1,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            display: '-webkit-box',
+            WebkitLineClamp: 1,
+            WebkitBoxOrient: 'vertical',
+          }}
+        >
           {property.title}
         </Typography>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography fontSize={10} color="text.secondary" noWrap>
-         {formatPrice(property.price, property.currency)}
-        </Typography>
-        <Typography fontSize={10} color="text.secondary" mt={0.3}>
-          <Rating name="rating" readOnly defaultValue={property.reviewRate} size="small" />
-        </Typography>
+        
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+          <Typography fontSize={18} fontWeight={700} color="primary.main">
+            {formatPrice(property.price, property.currency)}
+          </Typography>
+          <Box display="flex" alignItems="center" gap={0.5}>
+            <Rating 
+              name="rating" 
+              readOnly 
+              value={property.reviewRate || 0} 
+              size="small" 
+              precision={0.1}
+            />
+            <Typography fontSize={12} color="text.secondary">
+              ({property.reviewRate || 0})
+            </Typography>
+          </Box>
+        </Box>
+        
+        <Box display="flex" gap={2} alignItems="center">
+          <Typography fontSize={12} color="text.secondary">
+            {property.bedrooms || 0} bed
+          </Typography>
+          <Typography fontSize={12} color="text.secondary">
+            {property.bathrooms || 0} bath
+          </Typography>
+          {property.size && (
+            <Typography fontSize={12} color="text.secondary">
+              {property.size} sqft
+            </Typography>
+          )}
         </Box>
       </Box>
     </Box>
