@@ -11,7 +11,7 @@ export default function AppProviders({
 }: {
 	children: React.ReactNode;
 }) {
-	const [darkMode] = useState(true);
+	const [darkMode] = useState(false);
 	const theme = useMemo(() => (darkMode ? darkTheme : lightTheme), [darkMode]);
 	return (
 		<QueryClientProvider client={queryClient}>

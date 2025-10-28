@@ -64,17 +64,31 @@ export const createQueryStrings = (
     }
 
     if (Array.isArray(value)) {
-      value.forEach((v) => {
-        if (
-          v !== null &&
-          v !== undefined &&
-          v !== "" &&
-          v !== "none" &&
-          v !== "all"
-        ) {
-          searchParams.append(key, String(v));
+      if (key === 'price' && value.length === 2) {
+        // Handle price range specially
+        searchParams.append('priceMin', String(value[0]));
+        searchParams.append('priceMax', String(value[1]));
+      } else if (key === 'amenities' || key === 'features') {
+        // Join arrays with commas for amenities and features
+        const filteredValues = value.filter(v => 
+          v !== null && v !== undefined && v !== "" && v !== "none" && v !== "all"
+        );
+        if (filteredValues.length > 0) {
+          searchParams.append(key, filteredValues.join(','));
         }
-      });
+      } else {
+        value.forEach((v) => {
+          if (
+            v !== null &&
+            v !== undefined &&
+            v !== "" &&
+            v !== "none" &&
+            v !== "all"
+          ) {
+            searchParams.append(key, String(v));
+          }
+        });
+      }
     } else {
       searchParams.append(key, String(value));
     }

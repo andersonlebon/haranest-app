@@ -54,7 +54,7 @@ export default function AppAppBar() {
     >
       <Container maxWidth="lg">
         <StyledToolbar variant="dense" disableGutters>
-          {/* Brand / Logo */}
+
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Typography
               variant="h6"
@@ -66,7 +66,14 @@ export default function AppAppBar() {
               component="a"
               href="/"
             >
-              Haranest
+              
+              <img 
+              src="/Haranest-Logo.png" 
+              alt="" 
+              width={120} 
+              height={40}
+              />
+
             </Typography>
           </Box>
 
@@ -88,10 +95,10 @@ export default function AppAppBar() {
 
           {/* Desktop Actions */}
           <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1, alignItems: 'center' }}>
-            <Button color="primary" variant="text" size="small" href="/auth/sign-in">
+            <Button color="primary" variant="text" size="small" href="/login">
               Sign in
             </Button>
-            <Button color="primary" variant="contained" size="small" href="/auth/sign-up">
+            <Button color="primary" variant="contained" size="small" href="/login">
               Sign up
             </Button>
             <ColorModeIconDropdown />
@@ -131,12 +138,12 @@ export default function AppAppBar() {
           <Divider sx={{ my: 2 }} />
 
           <MenuItem>
-            <Button color="primary" variant="contained" fullWidth href="/auth/sign-up">
+            <Button color="primary" variant="contained" fullWidth href="/login">
               Sign up
             </Button>
           </MenuItem>
           <MenuItem>
-            <Button color="primary" variant="outlined" fullWidth href="/auth/sign-in">
+            <Button color="primary" variant="outlined" fullWidth href="/login">
               Sign in
             </Button>
           </MenuItem>

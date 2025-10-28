@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import SearchIcon from '@mui/icons-material/Search';
+
 import Slider from 'react-slick';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -28,21 +29,19 @@ interface Props {
 }
 
 export const PROPERTY_TYPES = [
-  { label: 'Apartment', value: 'Apartment', icon: '🏢' },
-  { label: 'House', value: 'House', icon: '🏠' },
-  { label: 'Condo', value: 'Condo', icon: '🏬' },
-  { label: 'Villa', value: 'Villa', icon: '🏡' },
-  { label: 'Studio', value: 'Studio', icon: '🎬' },
-  { label: 'Townhouse', value: 'Townhouse', icon: '🏘️' },
-  { label: 'Cottage', value: 'Cottage', icon: '🌲' },
-  { label: 'Loft', value: 'Loft', icon: '🏚️' },
-  { label: 'Duplex', value: 'Duplex', icon: '🏠🏠' },
-  { label: 'Penthouse', value: 'Penthouse', icon: '🌇' },
-  { label: 'Cabin', value: 'Cabin', icon: '🪵' },
-  { label: 'Farmhouse', value: 'Farmhouse', icon: '🚜' },
-  { label: 'Bungalow', value: 'Bungalow', icon: '🏡' },
-  { label: 'Boat', value: 'Boat', icon: '⛵' },
-  { label: 'Treehouse', value: 'Treehouse', icon: '🌳' },
+  { label: 'Apartment', value: 'apartment', icon: '🏢' },
+  { label: 'House', value: 'house', icon: '🏠' },
+  { label: 'Condo', value: 'condo', icon: '🏬' },
+  { label: 'Villa', value: 'villa', icon: '🏡' },
+  { label: 'Studio', value: 'studio', icon: '🎬' },
+  { label: 'Townhouse', value: 'townhouse', icon: '🏘️' },
+  { label: 'Loft', value: 'loft', icon: '🏚️' },
+  { label: 'Duplex', value: 'duplex', icon: '🏠🏠' },
+  { label: 'Penthouse', value: 'penthouse', icon: '🌇' },
+  { label: 'Cabin', value: 'cabin', icon: '🪵' },
+  { label: 'Farmhouse', value: 'farmhouse', icon: '🚜' },
+  { label: 'Bungalow', value: 'bungalow', icon: '🏡' },
+  { label: 'Other', value: 'other', icon: '✨' },
 ];
 
 function SampleNextArrow(props: { onClick?: () => void }) {
@@ -101,7 +100,7 @@ export default function TopFilters({
   handleApplyFilters
 }: Props) {
   return (
-    <Box display='flex' gap={2} flexWrap='wrap' alignItems='center'>
+    <Box display='flex' gap={3} flexWrap='wrap' alignItems='center'>
       {/* Property Type Selectors */}
       <Box sx={{ position: 'relative', pr: 6, maxWidth: '60%' }}>
         <Slider {...sliderSettings}>
@@ -118,24 +117,26 @@ export default function TopFilters({
                     handleApplyFilters()
                   }}
                   sx={{
-                    borderRadius: 5,
-                    border: '1px solid #ddd',
+                    borderRadius: 3,
+                    border: isSelected ? '2px solid #1976d2' : '1px solid #e0e0e0',
                     textAlign: 'center',
-                    width: 80,
-                    height: 80,
+                    width: 90,
+                    height: 90,
                     cursor: 'pointer',
-                    bgcolor: isSelected ? '#e0f7fa' : 'white',
-                    boxShadow: isSelected ? '0 0 0 2px #00bcd4' : undefined,
-                    transition: '0.2s',
+                    bgcolor: isSelected ? '#e3f2fd' : 'white',
+                    boxShadow: isSelected ? '0 4px 20px rgba(25, 118, 210, 0.2)' : '0 2px 10px rgba(0, 0, 0, 0.08)',
+                    transition: 'all 0.3s ease',
                     '&:hover': {
-                      bgcolor: '#f5f5f5',
+                      transform: 'translateY(-2px)',
+                      boxShadow: isSelected ? '0 6px 25px rgba(25, 118, 210, 0.3)' : '0 4px 15px rgba(0, 0, 0, 0.12)',
+                      bgcolor: isSelected ? '#e3f2fd' : '#f8f9fa',
                     },
                   }}
                 >
-                  <span style={{ fontSize: 30, lineHeight: 1 }}>
+                  <span style={{ fontSize: 32, lineHeight: 1 }}>
                     {type.icon}
                   </span>
-                  <Typography fontSize={10} fontWeight={500}>
+                  <Typography fontSize={11} fontWeight={600} color={isSelected ? 'primary.main' : 'text.primary'}>
                     {type.label}
                   </Typography>
                 </Stack>
@@ -152,18 +153,24 @@ export default function TopFilters({
         size='small'
         placeholder='Search location or keyword'
         sx={{
-          minWidth: 260,
-          borderRadius: 5,
+          minWidth: 300,
+          borderRadius: 3,
           bgcolor: 'white',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
           '& .MuiOutlinedInput-root': {
-            borderRadius: 5,
+            borderRadius: 3,
+            '&:hover': {
+              boxShadow: '0 6px 25px rgba(0, 0, 0, 0.12)',
+            },
+            '&.Mui-focused': {
+              boxShadow: '0 6px 25px rgba(25, 118, 210, 0.2)',
+            }
           },
         }}
         InputProps={{
           startAdornment: (
             <InputAdornment position='start'>
-              <SearchIcon fontSize='small' />
+              <SearchIcon fontSize='small' color="primary" />
             </InputAdornment>
           ),
         }}
@@ -171,7 +178,20 @@ export default function TopFilters({
 
       {/* Filter Drawer Icon (mobile only) */}
       {isSmall && (
-        <IconButton onClick={onOpenDrawer} sx={{ ml: 'auto' }}>
+        <IconButton 
+          onClick={onOpenDrawer} 
+          sx={{ 
+            ml: 'auto',
+            bgcolor: 'primary.main',
+            color: 'white',
+            '&:hover': {
+              bgcolor: 'primary.dark',
+              transform: 'scale(1.05)',
+            },
+            transition: 'all 0.3s ease',
+            boxShadow: '0 4px 15px rgba(25, 118, 210, 0.3)',
+          }}
+        >
           <FilterListIcon />
         </IconButton>
       )}

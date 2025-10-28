@@ -1,14 +1,13 @@
 import { PaginatedResponse, PaginationParams } from '@/components/shared/types';
-import { SQLWrapper, sql } from 'drizzle-orm';
+import { SQLWrapper, asc, desc, sql } from 'drizzle-orm';
 import { PgColumn, PgTableWithColumns } from 'drizzle-orm/pg-core';
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export interface QueryOptions<T> {
   where?: SQLWrapper | undefined;
   orderBy?: { column: PgColumn; direction: 'asc' | 'desc' }[];
-  join?: { table: PgTableWithColumns<any>; on: SQLWrapper }[];
-  populate?: any;
-  select?: (keyof T)[];
-  transformResult?: (items: T[]) => any[];
+  join?: { table: PgTableWithColumns<Record<string, unknown>>; on: SQLWrapper }[];
+  transformResult?: (items: T[]) => T[];
 }
 
 export function validatePaginationParams(params: PaginationParams): {
@@ -28,10 +27,10 @@ export function validatePaginationParams(params: PaginationParams): {
 }
 
 export async function paginateQuery<
-  T extends Record<string, any>,
-  TTable extends PgTableWithColumns<any>,
+  T extends Record<string, unknown>,
+  TTable extends PgTableWithColumns<Record<string, unknown>>,
 >(
-  db: any,
+  db: PostgresJsDatabase,
   table: TTable,
   params: PaginationParams,
   options: QueryOptions<T> = {},
@@ -39,52 +38,47 @@ export async function paginateQuery<
   try {
     const { perPage, page, offset } = validatePaginationParams(params);
 
-    const countQuery = db.select({ count: sql<number>`count(*)` }).from(table);
-
+    // COUNT with optional where
+    let countQuery = db.select({ count: sql<number>`count(*)` }).from(table);
     if (options.where) {
-      countQuery.where(options.where);
+      // drizzle builder is immutable; reassign when applying where
+      countQuery = countQuery.where(options.where);
     }
-
     const [countResult] = await countQuery;
     const total = Number(countResult?.count || 0);
 
     if (total === 0) {
       return {
-        perPage,
-        page,
-        total: 0,
-        totalPages: 0,
         data: [],
-      };
+        totalItems: 0,
+        totalPages: 0,
+        currentPage: page,
+        hasNextPage: false,
+        hasPreviousPage: page > 1,
+      } as unknown as PaginatedResponse<T>;
     }
 
-    const dataQuery = db
-      .select(options.populate)
+    // DATA with optional where, joins and ordering
+    let dataQuery = db
+      .select()
       .from(table)
       .limit(perPage)
       .offset(offset);
 
     options.join?.forEach(({ table: joinTable, on }) => {
-      dataQuery.leftJoin(joinTable, on);
+      dataQuery = dataQuery.leftJoin(joinTable, on);
     });
-    if (options.select) {
-      dataQuery.select(...options.select);
-    }
-
     if (options.where) {
-      dataQuery.where(options.where);
+      dataQuery = dataQuery.where(options.where);
     }
-
     if (options.orderBy && options.orderBy.length > 0) {
       options.orderBy.forEach(({ column, direction }) => {
-        if (direction === 'desc') {
-          dataQuery.orderBy(sql`${column} DESC`);
-        } else {
-          dataQuery.orderBy(column);
-        }
+        dataQuery = dataQuery.orderBy(
+          direction === 'desc' ? desc(column) : asc(column)
+        );
       });
     }
-    let data = await dataQuery;
+    let data = (await dataQuery) as T[];
 
     if (
       options.transformResult &&
@@ -94,12 +88,13 @@ export async function paginateQuery<
     }
 
     return {
-      perPage,
-      page,
-      total,
-      totalPages: Math.ceil(total / perPage),
       data,
-    };
+      totalItems: total,
+      totalPages: Math.ceil(total / perPage),
+      currentPage: page,
+      hasNextPage: page * perPage < total,
+      hasPreviousPage: page > 1,
+    } as unknown as PaginatedResponse<T>;
   } catch (error) {
     console.error('Error in pagination:', error);
     throw new Error('Error in pagination');

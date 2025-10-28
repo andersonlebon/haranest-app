@@ -69,45 +69,69 @@ export default function ImageSlide({ property, page='card' }: ImageSlideProps) {
     prevArrow: <PrevArrow />,
   };
 
-  // rentOrSell
+  // Build a safe list of images; fallback to a single placeholder when absent/empty
+  const imagesToShow = (Array.isArray(property.images) && property.images.length > 0)
+    ? property.images
+    : ['/images/house.png'];
 
-  return (
-       <>
+  // Detail page: interactive slider with next/prev arrows
+  if (page === 'detail') {
+    return (
+      <Box sx={{ position: 'relative', borderRadius: 3, overflow: 'hidden' }}>
         <Slider {...settings}>
-        {(property.images || ['/images/house.png', '/images/house.png']).map((img, index) => (
-
+          {imagesToShow.map((img, index) => (
             <Box
               key={index}
               component="img"
               src={img}
               alt={property.title}
+              onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/images/house.png'; }}
               sx={{
                 width: '100%',
-                height: page === 'detail' ? 600 : 200,
+                height: 480,
                 objectFit: 'cover',
-                borderRadius: 3,
               }}
             />
           ))}
         </Slider>
+      </Box>
+    );
+  }
 
-      {  page !== 'detail' && <>{property.status && (
-          <Chip
-            label={property.status}
-            size="small"
-            sx={{
-              position: 'absolute',
-              top: 8,
-              left: 8,
-              backgroundColor: 'white',
-              fontSize: 12,
-              fontWeight: 500,
-            }}
-          />
-        )}
+  // Card/List: single image for compact layout
+  const firstImage = imagesToShow[0];
+  return (
+    <>
+      <Box
+        component="img"
+        src={firstImage}
+        alt={property.title}
+        onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/images/house.png'; }}
+        sx={{
+          width: '100%',
+          height: 200,
+          objectFit: 'cover',
+          borderRadius: 3,
+        }}
+      />
 
-        {
-          property.rentOrSell && (
+      {(
+        <>
+          {property.status && (
+            <Chip
+              label={property.status}
+              size="small"
+              sx={{
+                position: 'absolute',
+                top: 8,
+                left: 8,
+                backgroundColor: 'white',
+                fontSize: 12,
+                fontWeight: 500,
+              }}
+            />
+          )}
+          {property.rentOrSell && (
             <Chip
               label={`for ${property.rentOrSell}`}
               size="small"
@@ -120,21 +144,19 @@ export default function ImageSlide({ property, page='card' }: ImageSlideProps) {
                 fontWeight: 500,
               }}
             />
-          )
-        }
-
-        <IconButton
-          sx={{
-            position: 'absolute',
-            top: 8,
-            right: 8,
-            backgroundColor: 'white',
-          }}
-        >
-          <FavoriteBorderIcon fontSize="small" />
-        </IconButton></>}
-      </>
-
-    
+          )}
+          <IconButton
+            sx={{
+              position: 'absolute',
+              top: 8,
+              right: 8,
+              backgroundColor: 'white',
+            }}
+          >
+            <FavoriteBorderIcon fontSize="small" />
+          </IconButton>
+        </>
+      )}
+    </>
   );
 }
