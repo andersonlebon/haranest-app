@@ -1,96 +1,57 @@
-"use client"
-import { useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query';
-import { CreatePropertyDto, PropertyResponseDto } from './dto';
-import { createProperty, deleteProperty, fetchProperties, fetchProperty, FiltersParams } from './services';
-import { PaginatedResponse } from '@/components/shared/types';
+import { PaginationParams } from "@/components/shared/types";
+import { PropertyResponseDto, CreatePropertyDto, UpdatePropertyDto } from "@/db/schema/properties/dto";
+import { propertyService } from "@/services/property.service";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
- 
-export const usePropertiesQuery = (filters: FiltersParams) => {
-  return useQuery<PaginatedResponse<PropertyResponseDto>>({
-    queryKey: ['properties', filters], 
-    queryFn: () => fetchProperties(filters),
-    staleTime: 5 * 60 * 1000, 
-    gcTime: 10 * 60 * 1000,
-    refetchOnWindowFocus: false, 
-    retry: 3, 
+
+// Get paginated properties
+export const useProperties = (params: PaginationParams) =>
+  useQuery<PropertyResponseDto[]>({
+    queryKey: ["properties", params],
+    queryFn: () => propertyService.getAll(params.page, params.perPage),
   });
-}
 
-export const usePropertyQuery = (id: number) => {
-  return useQuery<PropertyResponseDto>({
-    queryKey: ['property', id],
-    queryFn: () => fetchProperty(id),
+// Get a single property by ID
+export const useProperty = (id: number) =>
+  useQuery<PropertyResponseDto>({
+    queryKey: ["property", id],
+    queryFn: () => propertyService.getById(id),
     enabled: !!id,
-    staleTime: 10 * 60 * 1000, // 10 minutes pour les détails
-    gcTime: 30 * 60 * 1000, // 30 minutes en cache
   });
-}
 
+// Create property
 export const useCreateProperty = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: createProperty,
-    onSuccess: (newProperty) => {
-      // Invalide et refetch la liste des propriétés
-      queryClient.invalidateQueries({ queryKey: ['properties'] });
-      
-      // Ajoute la nouvelle propriété au cache
-      queryClient.setQueryData(['property', newProperty.id], newProperty);
-    },
-    onError: (error) => {
-      console.error('Erreur lors de la création:', error);
-    }
+  return useMutation<PropertyResponseDto, Error, CreatePropertyDto>({
+    mutationFn: (payload) => propertyService.create(payload),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["properties"] }),
   });
 };
 
- 
-export const useDeleteProperty = (): UseMutationResult<void, Error, number> => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: deleteProperty,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['properties'] });
-    },
-  });
-};
-
- 
+// Update property
 export const useUpdateProperty = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: Partial<PropertyResponseDto> }) => {
-      const response = await fetch(`/api/properties/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) {
-        throw new Error('Failed to update property');
-      }
-      return response.json();
+  return useMutation<
+    PropertyResponseDto, 
+    Error, 
+    { id: number; data: UpdatePropertyDto }
+  >({
+    mutationFn: ({ id, data }) => propertyService.update(id, data),
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: ["properties"] });
+      queryClient.invalidateQueries({ queryKey: ["property", id] });
     },
-    onSuccess: (updatedProperty) => {
-      // Met à jour le cache de la propriété
-      queryClient.setQueryData(['property', updatedProperty.id], updatedProperty);
-      // Invalide la liste pour refetch
-      queryClient.invalidateQueries({ queryKey: ['properties'] });
-    }
   });
 };
 
-// export const useDeleteProperty = () => {
-//   const queryClient = useQueryClient();
+// Delete property
+export const useDeleteProperty = () => {
+  const queryClient = useQueryClient();
 
-//   return useMutation({
-//     mutationFn: async (id: number) => {
-//       await db.delete(properties).where(eq(properties.id, id));
-//     },
-//     onSuccess: () => {
-//       queryClient.invalidateQueries({ queryKey: ['properties'] });
-//     },
-//   });
-// };
-
+  return useMutation<void, Error, number>({
+    mutationFn: (id) => propertyService.delete(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["properties"] }),
+  });
+};
