@@ -1,5 +1,7 @@
 // ---------- ENUMS ----------
 
+import { z } from "zod";
+
 export enum ProfileRole {
   Client = 'client',
   Seller = 'seller',
@@ -140,4 +142,8 @@ export interface InteractionWithDetails extends Interaction {
 export interface CommentWithDetails extends Comment {
   profile?: Profile;
   property?: Property;
+}
+// Utility to convert Drizzle pgEnum to Zod
+export function zodEnumFromPgEnum(pgEnum: { enumValues: readonly string[] }) {
+  return z.enum(pgEnum.enumValues as [string, ...string[]]);
 }
