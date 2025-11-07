@@ -1,4 +1,4 @@
-import { PaginationParams } from "@/components/shared/types";
+import { PaginatedResponse, PaginationParams } from "@/components/shared/types";
 import { PropertyResponseDto, CreatePropertyDto, UpdatePropertyDto } from "@/db/schema/properties/dto";
 import axiosClient from "@/lib/axiosClient";
 
@@ -9,9 +9,9 @@ class PropertyService {
   // ✅ Get all properties with pagination
   async getAll(
     params: PaginationParams
-  ): Promise<PropertyResponseDto[]> {
-    const response = await axiosClient.get<PropertyResponseDto[]>(this.baseUrl, {
-      params: { page: params.page, perPage: params.perPage },
+  ): Promise<PaginatedResponse<PropertyResponseDto>> {
+    const response = await axiosClient.get<PaginatedResponse<PropertyResponseDto>>(this.baseUrl, {
+      params: params,
     });
     return response.data;
   }

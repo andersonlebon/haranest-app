@@ -30,8 +30,9 @@ export interface Property {
 
  
 export interface PaginationParams {
-  page: number;
-  perPage: number;
+  page?: number;
+  perPage?: number;
+  search?: string;
 }
 
 export interface PaginatedResponse<T> {

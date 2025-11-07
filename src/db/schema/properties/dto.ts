@@ -1,5 +1,6 @@
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { properties } from "./schema";
+import { PaginationParams } from "@/components/shared/types";
 
 // For reading data (GET)
 export type PropertyResponseDto = InferSelectModel<typeof properties>;
@@ -14,3 +15,11 @@ export type CreatePropertyDto = Omit<
 
 // For updating properties (PATCH)
 export type UpdatePropertyDto = Partial<CreatePropertyDto>;
+export  interface PropertyParams extends PaginationParams {
+  price: number[];
+  bedrooms: number;
+  bathrooms: number;
+  amenities: string[];
+  features: string[];
+  propertyType?: string;
+}

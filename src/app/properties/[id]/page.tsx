@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { Box, CircularProgress, Container, Typography } from '@mui/material';
-import { usePropertyQuery } from '@/hooks/useProperties';
+import { useGetProperty } from '@/hooks/useProperties';
 import PropertyDetails from '@/components/properties/propertyDetails';
 
 
@@ -10,7 +10,7 @@ export default function PropertyPage() {
   const params = useParams();
   const id = Number(params?.id);
 
-  const { data: property, isLoading, isError } = usePropertyQuery(id);
+  const { data: property, isLoading, isError } = useGetProperty(id);
 
   if (isLoading) {
     return (

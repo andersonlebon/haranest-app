@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Button, Grid, Typography } from '@mui/material';
 import PropertyCard from './propertyCard';
-import { PropertyResponseDto } from '@/hooks/useProperties/dto';
+import { PropertyResponseDto } from '@/db/schema/properties/dto';
 
 interface PropertyGridViewProps {
   properties: PropertyResponseDto[];

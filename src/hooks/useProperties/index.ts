@@ -1,18 +1,18 @@
-import { PaginationParams } from "@/components/shared/types";
+import { PaginatedResponse, PaginationParams } from "@/components/shared/types";
 import { PropertyResponseDto, CreatePropertyDto, UpdatePropertyDto } from "@/db/schema/properties/dto";
 import { propertyService } from "@/services/property.service";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 
 // Get paginated properties
-export const useProperties = (params: PaginationParams) =>
-  useQuery<PropertyResponseDto[]>({
+export const useGetProperties = (params: PaginationParams) =>
+  useQuery<PaginatedResponse<PropertyResponseDto>>({
     queryKey: ["properties", params],
-    queryFn: () => propertyService.getAll(params.page, params.perPage),
+    queryFn: () => propertyService.getAll(params),
   });
 
 // Get a single property by ID
-export const useProperty = (id: number) =>
+export const useGetProperty = (id: number) =>
   useQuery<PropertyResponseDto>({
     queryKey: ["property", id],
     queryFn: () => propertyService.getById(id),

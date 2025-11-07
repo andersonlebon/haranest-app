@@ -15,17 +15,14 @@ import SearchIcon from '@mui/icons-material/Search';
 import Slider from 'react-slick';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import { PropertyParams } from '@/db/schema/properties/dto';
 
 interface Props {
   isSmall: boolean;
   search: string
-  selectedType: string | null;
+  selectedType?: string;
   onOpenDrawer: () => void;
-  handleFilterChange: (filters: {
-    propertyType?: string | null;
-    search?: string;
-  }) => void;
-  handleApplyFilters: () => void;
+  handleFilterChange: (filters: Partial<PropertyParams>) => void;
 }
 
 export const PROPERTY_TYPES = [
@@ -97,7 +94,6 @@ export default function TopFilters({
   selectedType,
   onOpenDrawer,
   handleFilterChange,
-  handleApplyFilters
 }: Props) {
   return (
     <Box display='flex' gap={3} flexWrap='wrap' alignItems='center'>
@@ -113,8 +109,7 @@ export default function TopFilters({
                   justifyContent='center'
                   spacing={1}
                   onClick={() =>{
-                    handleFilterChange({ propertyType: isSelected ? null : type.value })
-                    handleApplyFilters()
+                    handleFilterChange({ propertyType: type.value })
                   }}
                   sx={{
                     borderRadius: 3,

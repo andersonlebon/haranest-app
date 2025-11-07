@@ -22,18 +22,11 @@ import LocalParkingIcon from '@mui/icons-material/LocalParking';
 import KitchenIcon from '@mui/icons-material/Kitchen';
 import DryIcon from '@mui/icons-material/LocalLaundryService';
 import { formatNumber } from '@/utils/formats';
-
-export interface FiltersState {
-  price: number[];
-  bedrooms: number;
-  bathrooms: number;
-  amenities: string[];
-  features: string[];
-}
+import { PropertyParams } from '@/db/schema/properties/dto';
 
 interface SidebarFiltersProps  {
-  onFilterChange: (filters: FiltersState) => void;
-  filters: FiltersState;
+  onFilterChange: (filters: PropertyParams) => void;
+  filters: PropertyParams;
   onApplyFilters: () => void;
   onResetFilters: () => void;
   defaultPriceRange: number[];
@@ -76,7 +69,7 @@ export default function SidebarFilters({
     amenities,
     features,
   } = filters;
-  const update = (updated: Partial<FiltersState>) => {
+  const update = (updated: Partial<PropertyParams>) => {
     onFilterChange({
       price,
       bedrooms,
