@@ -18,7 +18,7 @@ import ImageUploader from "./ImageUploader";
 import { uploadPropertyImages } from "@/hooks/useProperties/services";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PropertyFormValues, propertySchema } from "@/hooks/useProperties/dto";
+import { PropertyFormValues, propertySchema } from "@/db/schema/properties/dto";
 import { propertyTypes, propertyFeatures, statuses } from "@/utils/constants";
 
 /* -------------------------------------------------------------------------- */

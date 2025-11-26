@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid } from '@mui/material';
 import PropertyListItem from './propertyListItem';
-import { PropertyResponseDto } from '@/hooks/useProperties/dto';
+import { PropertyResponseDto } from '@/db/schema/properties/dto';
 
 interface PropertyListViewProps {
   properties: PropertyResponseDto[];

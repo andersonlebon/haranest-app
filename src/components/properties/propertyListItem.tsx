@@ -11,7 +11,7 @@ import {
 // import HomeWorkIcon from '@mui/icons-material/HomeWork';
 // import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import ImageSlide from './imageCard';
-import { PropertyResponseDto } from '@/hooks/useProperties/dto';
+import { PropertyResponseDto } from '@/db/schema/properties/dto';
 
 
 

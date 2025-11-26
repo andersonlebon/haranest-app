@@ -1,16 +1,58 @@
 import { properties } from "@/db/schema/properties/schema";
-import { eq } from "drizzle-orm";
+import { and, eq, gte, ilike, lte, sql } from "drizzle-orm";
 import { db } from "@/config/drizzle.config";
 import { paginateQuery } from "@/utils/paginate";
 import { PaginationParams } from "@/components/shared/types";
 import { PropertyFormValues } from "../schema/properties/validation";
+import { PropertyParams } from "../schema/properties/dto";
 
 export class PropertyRepository {
-  static async findAll(params: PaginationParams) {
-    return paginateQuery(db, properties, params, {
-      orderBy: [{ column: properties.createdAt, direction: "desc" }],
+   static async findAll(params: PaginationParams & { filters?: PropertyParams }) {
+    const { filters, ...pagination } = params;
+    const conditions = [];
+
+    // ✅ Price range filter
+    if (filters?.price?.length === 2) {
+      const [min, max] = filters.price;
+      conditions.push(gte(properties.price, min.toString()));
+      conditions.push(lte(properties.price, max.toString()));
+    }
+
+    // ✅ Bedrooms & Bathrooms
+    if (filters?.bedrooms && filters.bedrooms > 0)
+      conditions.push(eq(properties.bedrooms, filters.bedrooms));
+
+    if (filters?.bathrooms && filters.bathrooms > 0)
+      conditions.push(eq(properties.bathrooms, filters.bathrooms));
+
+    // ✅ Property Type
+    if (filters?.propertyType)
+      conditions.push(eq(properties.propertyType, filters.propertyType));
+
+    // ✅ Search (title or description)
+    if (filters?.search)
+      conditions.push(ilike(properties.title, `%${filters.search}%`));
+
+    // ✅ Array-based filters (amenities/features)
+  // ✅ Array-based filters (amenities/features)
+    if (filters?.amenities?.length) {
+      conditions.push(
+        sql`${properties.amenities} && ${filters.amenities as string[]}`
+      );
+    }
+    
+    if (filters?.features?.length) {
+      conditions.push(
+        sql`${properties.features} && ${filters.features as string[]}`
+      );
+    }
+
+    return paginateQuery(db, properties, pagination, {
+      where: conditions.length ? and(...conditions) : undefined,
+      orderBy: [{ column: properties.createdAt, direction: 'desc' }],
     });
   }
+
 
   static async findById(id: number) {
     const result = await db

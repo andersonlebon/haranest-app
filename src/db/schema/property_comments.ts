@@ -1,5 +1,5 @@
 import { pgTable, bigserial, text, timestamp } from "drizzle-orm/pg-core";
-import { properties } from "./properties";
+import { properties } from "./properties/schema";
 import { profiles } from "./profiles";
 
 export const propertyComments = pgTable("property_comments", {

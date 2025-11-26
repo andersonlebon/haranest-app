@@ -64,9 +64,7 @@ export default function PropertyListPage() {
 		setFilters((prev) => ({ ...prev, page: value }));
 	};
 
-	const handleFilterChange = (newFilters: PropertyParams) => {
-		console.log('New Filters:', newFilters);
-		console.log('Previous Filters:', filters);
+	const handleFilterChange = (newFilters: Partial<PropertyParams>) => {
 		setFilters((prev) => ({ ...prev, ...newFilters, page: 1 }));
 	};
 

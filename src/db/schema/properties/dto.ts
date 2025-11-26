@@ -1,5 +1,5 @@
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
-import { properties } from "./schema";
+import { properties, propertyTypeEnum } from "./schema";
 import { PaginationParams } from "@/components/shared/types";
 
 // For reading data (GET)
@@ -21,5 +21,6 @@ export  interface PropertyParams extends PaginationParams {
   bathrooms: number;
   amenities: string[];
   features: string[];
-  propertyType?: string;
+  propertyType?: (typeof propertyTypeEnum.enumValues)[number];
+
 }

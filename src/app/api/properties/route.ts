@@ -7,26 +7,34 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const id = searchParams.get("id");
+
   const page = Number(searchParams.get("page") ?? 1);
   const perPage = Number(searchParams.get("perPage") ?? 10);
 
-  try {
-    if (id) {
-      // GET single property
-      const property = await PropertyRepository.findById(Number(id));
-      if (!property) {
-        return NextResponse.json({ error: "Property not found" }, { status: 404 });
-      }
-      return NextResponse.json(property);
-    }
+  // ✅ Parse arrays safely
+  const getArrayParam = (key: string): string[] =>
+    searchParams.getAll(key).filter(Boolean);
 
-    // GET paginated list
-    const data = await PropertyRepository.findAll({ page, perPage });
+  const getNumberArrayParam = (key: string): number[] =>
+    searchParams.getAll(key).map(Number).filter((n) => !isNaN(n));
+
+  // ✅ Extract filters from query
+  const filters = {
+    price: getNumberArrayParam("price"), // [min, max]
+    bedrooms: Number(searchParams.get("bedrooms") ?? 0),
+    bathrooms: Number(searchParams.get("bathrooms") ?? 0),
+    amenities: getArrayParam("amenities"),
+    features: getArrayParam("features"),
+    propertyType: searchParams.get("propertyType") ?? undefined,
+    search: searchParams.get("search") ?? undefined,
+  };
+
+  try {
+    const data = await PropertyRepository.findAll({ page, perPage, filters });
     return NextResponse.json(data);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error(err);
+    console.error("Error fetching properties:", err);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

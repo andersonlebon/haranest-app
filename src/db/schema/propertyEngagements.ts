@@ -1,5 +1,5 @@
 import { pgTable, bigserial, integer, timestamp } from "drizzle-orm/pg-core";
-import { properties } from "./properties";
+import { properties } from "./properties/schema";
 
 export const propertyEngagements = pgTable("property_engagements", {
   id: bigserial("id", { mode: "number" }).primaryKey(),
