@@ -1,1 +1,0 @@
-ALTER TABLE "properties" ADD COLUMN "images" text[] DEFAULT '{}';

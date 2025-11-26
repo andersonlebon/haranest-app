@@ -8,7 +8,7 @@ import {
   numeric,
 } from "drizzle-orm/pg-core";
 import { pgEnum } from "drizzle-orm/pg-core";
-import { profiles } from "../profiles";
+import { profiles } from "./profiles";
 
 // Property Types
 export const propertyTypeEnum = pgEnum("property_type", [

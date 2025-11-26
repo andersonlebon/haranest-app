@@ -33,7 +33,6 @@ export const profiles = pgTable("profiles", {
   city: text("city"),
   address: text("address"),
   bio: text("bio"),
-
   avatarUrl: text("avatar_url"),
   isVerified: boolean("is_verified").default(false),
   isActive: boolean("is_active").default(true),

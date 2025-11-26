@@ -15,7 +15,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Slider from 'react-slick';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { PropertyParams } from '@/db/schema/properties/dto';
+import { PropertyParams } from '@/db/dtos/properties.dto';
 
 interface Props {
   isSmall: boolean;

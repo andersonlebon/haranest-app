@@ -36,6 +36,34 @@
       "when": 1748385575773,
       "tag": "20250527223935_daffy_carlie_cooper",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1764184133357,
+      "tag": "20251126190853_absent_doomsday",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1764184683297,
+      "tag": "20251126191803_lethal_radioactive_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1764186169034,
+      "tag": "20251126194249_dashing_whizzer",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1764195892385,
+      "tag": "20251126222452_hard_kingpin",
+      "breakpoints": true
     }
   ]
 }

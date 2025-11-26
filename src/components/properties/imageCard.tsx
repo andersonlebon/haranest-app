@@ -9,7 +9,7 @@ import {
 import Slider from 'react-slick';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
-import { PropertyResponseDto } from '@/db/schema/properties/dto';
+import { PropertyResponseDto } from '@/db/dtos/properties.dto';
 
 
 function NextArrow(props: { onClick?: () => void }) {

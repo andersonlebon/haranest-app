@@ -14,7 +14,7 @@ import {
   Button,
 } from '@mui/material';
 import { Star, Favorite } from '@mui/icons-material';
-import { PropertyResponseDto } from '@/db/schema/properties/dto';
+import { PropertyResponseDto } from '@/db/dtos/properties.dto';
 import ImageSlide from './imageCard';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ShareIcon from '@mui/icons-material/Share';

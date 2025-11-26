@@ -7,7 +7,7 @@ import {
   Rating,
 } from '@mui/material';
 import ImageSlide from './imageCard';
-import { PropertyResponseDto } from '@/db/schema/properties/dto';
+import { PropertyResponseDto } from '@/db/dtos/properties.dto';
 import { formatPrice } from '@/utils/formats';
 import { useRouter } from 'next/navigation';
 

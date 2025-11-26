@@ -19,7 +19,7 @@ import TopFilters from '../components/properties/topFilters';
 import { omitValues } from '@/utils/formats';
 import { useGetProperties } from '@/hooks/useProperties';
 import PageErrorState from '@/components/shared/ErrorState';
-import { PropertyParams } from '@/db/schema/properties/dto';
+import { PropertyParams } from '@/db/dtos/properties.dto';
 
 const DEFAULT_FILTERS: PropertyParams = {
 	price: [1, 999999999],

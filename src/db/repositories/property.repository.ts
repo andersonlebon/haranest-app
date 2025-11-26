@@ -1,10 +1,10 @@
-import { properties } from "@/db/schema/properties/schema";
+import { properties } from "@/db/schema/properties";
 import { and, eq, gte, ilike, lte, sql } from "drizzle-orm";
 import { db } from "@/config/drizzle.config";
 import { paginateQuery } from "@/utils/paginate";
 import { PaginationParams } from "@/components/shared/types";
-import { PropertyFormValues } from "../schema/properties/validation";
-import { PropertyParams } from "../schema/properties/dto";
+import { PropertyFormValues } from "../validations/properties.validation";
+import { PropertyParams } from "../dtos/properties.dto";
 
 export class PropertyRepository {
    static async findAll(params: PaginationParams & { filters?: PropertyParams }) {

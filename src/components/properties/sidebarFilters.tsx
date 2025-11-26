@@ -22,7 +22,7 @@ import LocalParkingIcon from '@mui/icons-material/LocalParking';
 import KitchenIcon from '@mui/icons-material/Kitchen';
 import DryIcon from '@mui/icons-material/LocalLaundryService';
 import { formatNumber } from '@/utils/formats';
-import { PropertyParams } from '@/db/schema/properties/dto';
+import { PropertyParams } from '@/db/dtos/properties.dto';
 
 interface SidebarFiltersProps  {
   onFilterChange: (filters: PropertyParams) => void;

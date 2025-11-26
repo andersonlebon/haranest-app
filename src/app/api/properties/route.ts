@@ -1,5 +1,5 @@
 import { PropertyRepository } from "@/db/repositories/property.repository";
-import { propertySchema } from "@/db/schema/properties/validation";
+import { propertySchema } from "@/db/validations/properties.validation";
 import { NextResponse } from "next/server";
 
 

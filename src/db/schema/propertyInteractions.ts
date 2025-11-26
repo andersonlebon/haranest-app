@@ -7,7 +7,7 @@ import {
   integer,
 } from "drizzle-orm/pg-core";
 import { profiles } from "./profiles";
-import { properties } from "./properties/schema";
+import { properties } from "./properties";
 
 // 1. Enum for interaction type
 export const propertyInteractionTypeEnum = pgEnum("property_interaction_type", [

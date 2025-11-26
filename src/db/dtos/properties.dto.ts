@@ -1,5 +1,5 @@
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
-import { properties, propertyTypeEnum } from "./schema";
+import { properties, propertyTypeEnum } from "../schema/properties";
 import { PaginationParams } from "@/components/shared/types";
 
 // For reading data (GET)

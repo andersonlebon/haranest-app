@@ -4,7 +4,8 @@ CREATE TYPE "public"."exterior_material" AS ENUM('brick', 'stone', 'vinyl', 'woo
 CREATE TYPE "public"."property_feature" AS ENUM('garage', 'swimming_pool', 'garden', 'balcony', 'air_conditioning', 'security', 'gym', 'fireplace', 'furnished', 'internet', 'solar_panels', 'basement');--> statement-breakpoint
 CREATE TYPE "public"."property_status" AS ENUM('available', 'sold', 'pending', 'rented', 'off_market', 'under_construction');--> statement-breakpoint
 CREATE TYPE "public"."property_structure" AS ENUM('brick', 'wood', 'steel', 'concrete', 'mixed', 'other');--> statement-breakpoint
-CREATE TYPE "public"."property_type" AS ENUM('apartment', 'house', 'villa', 'condo', 'cabin', 'townhouse', 'studio', 'duplex', 'penthouse', 'farmhouse', 'bungalow', 'mansion', 'loft', 'other');--> statement-breakpoint
+CREATE TYPE "public"."property_type" AS ENUM('apartment', 'house', 'villa', 'condo', 'cabin', 'townhouse', 'studio', 'duplex', 'penthouse', 'farmhouse', 'bungalow', 'mansion', 'loft', 'other', '');--> statement-breakpoint
+CREATE TYPE "public"."rent_or_sell" AS ENUM('rent', 'sell');--> statement-breakpoint
 CREATE TYPE "public"."roofing_type" AS ENUM('shingles', 'tiles', 'metal', 'flat', 'thatched', 'other');--> statement-breakpoint
 CREATE TYPE "public"."property_interaction_type" AS ENUM('like', 'dislike', 'favorite', 'view', 'buy_later', 'contacted', 'booked_visit', 'shared', 'reported', 'saved_note', 'rated', 'applied');--> statement-breakpoint
 CREATE TABLE "profiles" (
@@ -31,8 +32,14 @@ CREATE TABLE "properties" (
 	"title" text NOT NULL,
 	"description" text,
 	"price" numeric(12, 2) NOT NULL,
-	"currency" text DEFAULT 'USD',
+	"currency" text DEFAULT 'USD' NOT NULL,
 	"commission" numeric(5, 2),
+	"images" text[] DEFAULT '{}',
+	"video_preview_url" text,
+	"review_rate" integer DEFAULT 0 NOT NULL,
+	"amenities" text[] DEFAULT '{}',
+	"features" "property_feature"[] DEFAULT '{}',
+	"rent_or_sell" "rent_or_sell" DEFAULT 'sell' NOT NULL,
 	"property_type" "property_type" NOT NULL,
 	"status" "property_status" DEFAULT 'available' NOT NULL,
 	"size" numeric,
@@ -94,9 +101,21 @@ CREATE TABLE "property_comments" (
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "property_reviews" (
+	"id" bigserial PRIMARY KEY NOT NULL,
+	"property_id" bigserial NOT NULL,
+	"name" text NOT NULL,
+	"location" text,
+	"rating" integer DEFAULT 0,
+	"comment" text NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 ALTER TABLE "properties" ADD CONSTRAINT "properties_profile_id_profiles_id_fk" FOREIGN KEY ("profile_id") REFERENCES "public"."profiles"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "property_engagements" ADD CONSTRAINT "property_engagements_id_properties_id_fk" FOREIGN KEY ("id") REFERENCES "public"."properties"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "property_interactions" ADD CONSTRAINT "property_interactions_profile_id_profiles_id_fk" FOREIGN KEY ("profile_id") REFERENCES "public"."profiles"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "property_interactions" ADD CONSTRAINT "property_interactions_profile_id_properties_id_fk" FOREIGN KEY ("profile_id") REFERENCES "public"."properties"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "property_comments" ADD CONSTRAINT "property_comments_property_id_properties_id_fk" FOREIGN KEY ("property_id") REFERENCES "public"."properties"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "property_comments" ADD CONSTRAINT "property_comments_profile_id_profiles_id_fk" FOREIGN KEY ("profile_id") REFERENCES "public"."profiles"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "property_comments" ADD CONSTRAINT "property_comments_profile_id_profiles_id_fk" FOREIGN KEY ("profile_id") REFERENCES "public"."profiles"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "property_reviews" ADD CONSTRAINT "property_reviews_property_id_properties_id_fk" FOREIGN KEY ("property_id") REFERENCES "public"."properties"("id") ON DELETE cascade ON UPDATE no action;

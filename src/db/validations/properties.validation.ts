@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { propertyFeatureEnum, rentOrSellEnum, propertyTypeEnum, propertyStatusEnum, propertyStructureEnum, roofingTypeEnum, exteriorMaterialEnum } from "@/db/schema/properties/schema";
-import { zodEnumFromPgEnum } from "@/db/types";
+import { propertyFeatureEnum, rentOrSellEnum, propertyTypeEnum, propertyStatusEnum, propertyStructureEnum, roofingTypeEnum, exteriorMaterialEnum } from "@/db/schema/properties";
+import { zodEnumFromPgEnum } from "@/db/types/types";
 
 
 // Create Zod enums from pgEnums

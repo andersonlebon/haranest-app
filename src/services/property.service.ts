@@ -1,5 +1,5 @@
 import { PaginatedResponse, PaginationParams } from "@/components/shared/types";
-import { PropertyResponseDto, CreatePropertyDto, UpdatePropertyDto } from "@/db/schema/properties/dto";
+import { PropertyResponseDto, CreatePropertyDto, UpdatePropertyDto } from "@/db/dtos/properties.dto";
 import axiosClient from "@/lib/axiosClient";
 
 

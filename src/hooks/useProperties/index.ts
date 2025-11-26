@@ -1,5 +1,5 @@
 import { PaginatedResponse, PaginationParams } from "@/components/shared/types";
-import { PropertyResponseDto, CreatePropertyDto, UpdatePropertyDto } from "@/db/schema/properties/dto";
+import { PropertyResponseDto, CreatePropertyDto, UpdatePropertyDto } from "@/db/dtos/properties.dto";
 import { propertyService } from "@/services/property.service";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 

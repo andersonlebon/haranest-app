@@ -1,1 +1,0 @@
-ALTER TABLE "properties" ADD COLUMN "video_preview_url" text;
