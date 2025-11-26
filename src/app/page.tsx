@@ -20,6 +20,8 @@ import { omitValues } from '@/utils/formats';
 import { useGetProperties } from '@/hooks/useProperties';
 import PageErrorState from '@/components/shared/ErrorState';
 import { PropertyParams } from '@/db/dtos/properties.dto';
+import { useAuth } from '@/context/AuthContext';
+import { PrivateRoute } from '@/components/auth/PrivateRoute';
 
 const DEFAULT_FILTERS: PropertyParams = {
 	price: [1, 999999999],
@@ -36,7 +38,8 @@ export default function PropertyListPage() {
 	const [view, setView] = useState<'grid' | 'list'>('grid');
 	const [drawerOpen, setDrawerOpen] = useState(false);
 	const [filters, setFilters] = useState<PropertyParams>(DEFAULT_FILTERS);
-
+  const { user } = useAuth();
+	console.log('Authenticated user:', user);
 	const {
 		data: properties,
 		isLoading,
@@ -78,6 +81,7 @@ export default function PropertyListPage() {
 	};
 
 	return (
+		<PrivateRoute>
 		<Box
 			sx={{
 				width: '100%',
@@ -286,5 +290,6 @@ export default function PropertyListPage() {
 				defaultPriceRange={DEFAULT_FILTERS.price}
 			/>
 		</Box>
+	</PrivateRoute>
 	);
 }
