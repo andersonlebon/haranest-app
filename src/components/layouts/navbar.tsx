@@ -13,10 +13,16 @@ import {
   MenuItem,
   Divider,
   Typography,
+  Avatar,
+  Menu,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import ColorModeIconDropdown from '../shared/thems';
+import { useAuth } from '@/context/AuthContext';
+import { useThemeContext } from '@/context/ThemeContext';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: 'flex',
@@ -36,9 +42,23 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 
 export default function AppAppBar() {
   const [open, setOpen] = React.useState(false);
+  const { user, signOut } = useAuth(); // 🎯 integrated
+  const { mode, toggleMode } = useThemeContext();
+
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
+  };
+
+  // Avatar menu
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const menuOpen = Boolean(anchorEl);
+
+  const handleAvatarClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -66,14 +86,12 @@ export default function AppAppBar() {
               component="a"
               href="/"
             >
-              
               <img 
-              src="/Haranest-Logo.png" 
-              alt="" 
-              width={120} 
-              height={40}
+                src="/Haranest-Logo.png" 
+                alt="" 
+                width={120} 
+                height={40}
               />
-
             </Typography>
           </Box>
 
@@ -95,14 +113,78 @@ export default function AppAppBar() {
 
           {/* Desktop Actions */}
           <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1, alignItems: 'center' }}>
-            <Button color="primary" variant="text" size="small" href="/login">
-              Sign in
-            </Button>
-            <Button color="primary" variant="contained" size="small" href="/login">
-              Sign up
-            </Button>
-            <ColorModeIconDropdown />
-          </Box>
+
+            {/* If NOT authenticated */}
+            {!user && (
+              <>
+                <Button color="primary" variant="text" size="small" href="/login">
+                  Sign in
+                </Button>
+                <Button color="primary" variant="contained" size="small" href="/login">
+                  Sign up
+                </Button>
+              </>
+            )}
+
+            {/* If authenticated show Avatar */}
+            {user && (
+              <>
+                <IconButton onClick={handleAvatarClick} sx={{ p: 0 }}>
+                  <Avatar
+                    alt={user.fullName || 'User'}
+                    src={user.avatarUrl || ''}
+                    sx={{
+                      width: 40,
+                      height: 40,
+                      border: '2px solid rgba(255,255,255,0.4)',
+                      boxShadow: 1,
+                    }}
+                  />
+                </IconButton>
+                 {/* Theme Switcher */}
+                  <IconButton onClick={toggleMode} color="inherit">
+                    {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
+                  </IconButton>
+
+                <Menu
+                  anchorEl={anchorEl}
+                  open={menuOpen}
+                  onClose={handleMenuClose}
+                  PaperProps={{
+                    elevation: 4,
+                    sx: {
+                      mt: 1.5,
+                      borderRadius: 3,
+                      minWidth: 220,
+                    },
+                  }}
+                >
+                  <Box sx={{ px: 2, py: 1.5 }}>
+                    <Typography fontWeight={600}>{user.fullName}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {user.email}
+                    </Typography>
+                  </Box>
+
+                  <Divider />
+
+                  <MenuItem component="a" href="/profile">Profile</MenuItem>
+                  <MenuItem component="a" href="/dashboard">Dashboard</MenuItem>
+
+                  <Divider />
+
+                  <MenuItem
+                    onClick={() => {
+                      signOut();
+                      handleMenuClose();
+                    }}
+                    sx={{ color: 'error.main', fontWeight: 600 }}
+                  >
+                    Logout
+                  </MenuItem>
+                </Menu>
+              </>
+            )}          </Box>
 
           {/* Mobile Menu */}
           <Box sx={{ display: { xs: 'flex', md: 'none' }, gap: 1 }}>
@@ -111,6 +193,7 @@ export default function AppAppBar() {
               <MenuIcon />
             </IconButton>
           </Box>
+
         </StyledToolbar>
       </Container>
 
