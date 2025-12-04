@@ -13,6 +13,7 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuth } from "@/context/AuthContext";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -25,11 +26,11 @@ interface LoginProps {
   login: (formData: FormData) => Promise<void>;
 }
 
-export default function LoginForm({ login }: LoginProps) {
+export default function LoginForm() {
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
+  const { signIn, loading, response } = useAuth();
 
-  const [isPending, startTransition] = useTransition();
 
   const {
     register,
@@ -43,10 +44,8 @@ export default function LoginForm({ login }: LoginProps) {
     const formData = new FormData();
     formData.append("email", data.email);
     formData.append("password", data.password);
-
-    startTransition(() => {
-      login(formData);
-    });
+    signIn(formData);
+    
   };
 
   return (    
@@ -73,7 +72,7 @@ export default function LoginForm({ login }: LoginProps) {
           label="Email"
           type="email"
           fullWidth
-          disabled={isPending}
+          disabled={loading}
           error={!!errors.email}
           helperText={errors.email?.message}
           {...register("email")}
@@ -82,15 +81,21 @@ export default function LoginForm({ login }: LoginProps) {
           label="Password"
           type="password"
           fullWidth
-          disabled={isPending}
+          disabled={loading}
           error={!!errors.password}
           helperText={errors.password?.message}
           {...register("password")}
         />
 
-        {!isPending && error && (
+        {!loading && (error || response?.error) && (
           <Typography variant="body2" color="error">
-            {error}
+            {error || response?.error}
+          </Typography>
+        )}
+
+        {!loading && response?.success && (
+          <Typography variant="body2" color="primary">
+            {response.success}
           </Typography>
         )}
 
@@ -98,8 +103,8 @@ export default function LoginForm({ login }: LoginProps) {
           type="submit"
           variant="contained"
           fullWidth
-          disabled={isPending}
-          startIcon={isPending ? <CircularProgress size={20} /> : null}
+          disabled={loading}
+          startIcon={loading ? <CircularProgress size={20} /> : null}
         >
           Log in
         </Button>
@@ -110,7 +115,7 @@ export default function LoginForm({ login }: LoginProps) {
             fullWidth
             href="/signup"
             type="link"
-            disabled={isPending}
+            disabled={loading}
           >
             Don&apos;t have an account?
           </Button>
@@ -119,7 +124,7 @@ export default function LoginForm({ login }: LoginProps) {
             type="link"
             fullWidth
             href="/forgot-password"
-            disabled={isPending}
+            disabled={loading}
           >
             Forgot password?
           </Button>
