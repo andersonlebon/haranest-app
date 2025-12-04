@@ -1,6 +1,7 @@
 // ---------- ENUMS ----------
 
 import { z } from "zod";
+import { UserRole } from "../dtos/profiles.dto";
 
 export enum ProfileRole {
   Client = 'client',
@@ -42,9 +43,16 @@ export interface User {
 export interface Profile {
   id: number;
   userId: string;
-  role: ProfileRole;
-  displayName: string | null;
+  role: UserRole;
+  fullName: string | null;
   bio: string | null;
+  phoneNumber: string | null;
+  country: string | null;
+  city: string | null;
+  address: string | null;
+  email: string | null;
+  isVerified: boolean;
+  isActive: boolean;
   avatarUrl: string | null;
   createdAt: string;
   updatedAt: string;
