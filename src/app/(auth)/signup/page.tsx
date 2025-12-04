@@ -7,13 +7,13 @@ import {
   Stack,
   TextField,
   Typography,
+  MenuItem,
 } from "@mui/material";
-import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signup } from "../actions";
 import { useSearchParams } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 // Validation schema
 const signupSchema = z
@@ -22,6 +22,17 @@ const signupSchema = z
     email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string(),
+    phoneNumber: z.string(),
+    country: z.string(),
+    city: z.string(),
+    role: z.enum([
+      "client",
+      "seller",
+      "agent",
+      "investor",
+      "business_owner",
+      "admin",
+    ]),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -31,9 +42,9 @@ const signupSchema = z
 type SignupFormData = z.infer<typeof signupSchema>;
 
 export default function SignupPage() {
-  const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
+  const { signUp, loading } = useAuth();
 
   const {
     register,
@@ -41,6 +52,9 @@ export default function SignupPage() {
     formState: { errors },
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
+    defaultValues: {
+      role: "client",
+    },
   });
 
   const onSubmit = (data: SignupFormData) => {
@@ -48,10 +62,12 @@ export default function SignupPage() {
     form.append("name", data.name);
     form.append("email", data.email);
     form.append("password", data.password);
-
-    startTransition(() => {
-      signup(form);
-    });
+    form.append("phoneNumber", data.phoneNumber ?? "");
+    form.append("country", data.country ?? "");
+    form.append("city", data.city ?? "");
+    form.append("role", data.role);
+    signUp(form);
+    
   };
 
   return (
@@ -77,7 +93,7 @@ export default function SignupPage() {
         <TextField
           label="Name"
           fullWidth
-          disabled={isPending}
+          disabled={loading}
           error={!!errors.name}
           helperText={errors.name?.message}
           {...register("name")}
@@ -87,7 +103,7 @@ export default function SignupPage() {
           label="Email"
           type="email"
           fullWidth
-          disabled={isPending}
+          disabled={loading}
           error={!!errors.email}
           helperText={errors.email?.message}
           {...register("email")}
@@ -97,7 +113,7 @@ export default function SignupPage() {
           label="Password"
           type="password"
           fullWidth
-          disabled={isPending}
+          disabled={loading}
           error={!!errors.password}
           helperText={errors.password?.message}
           {...register("password")}
@@ -107,13 +123,58 @@ export default function SignupPage() {
           label="Confirm Password"
           type="password"
           fullWidth
-          disabled={isPending}
+          disabled={loading}
           error={!!errors.confirmPassword}
           helperText={errors.confirmPassword?.message}
           {...register("confirmPassword")}
         />
 
-        {!isPending && error && (
+        <TextField
+          label="Phone Number"
+          type="tel"
+          fullWidth
+          disabled={loading}
+          error={!!errors.phoneNumber}
+          helperText={errors.phoneNumber?.message}
+          {...register("phoneNumber")}
+        />
+
+        <TextField
+          label="Country"
+          fullWidth
+          disabled={loading}
+          error={!!errors.country}
+          helperText={errors.country?.message}
+          {...register("country")}
+        />
+
+        <TextField
+          label="City"
+          fullWidth
+          disabled={loading}
+          error={!!errors.city}
+          helperText={errors.city?.message}
+          {...register("city")}
+        />
+
+        <TextField
+          select
+          label="Role"
+          fullWidth
+          disabled={loading}
+          error={!!errors.role}
+          helperText={errors.role?.message}
+          {...register("role")}
+        >
+          <MenuItem value="client">Client</MenuItem>
+          <MenuItem value="seller">Seller</MenuItem>
+          <MenuItem value="agent">Agent</MenuItem>
+          <MenuItem value="investor">Investor</MenuItem>
+          <MenuItem value="business_owner">Business Owner</MenuItem>
+          <MenuItem value="admin">Admin</MenuItem>
+        </TextField>
+
+        {!loading && error && (
           <Typography variant="body2" color="error">
             {error}
           </Typography>
@@ -123,8 +184,8 @@ export default function SignupPage() {
           type="submit"
           variant="contained"
           fullWidth
-          disabled={isPending}
-          startIcon={isPending ? <CircularProgress size={20} /> : null}
+          disabled={loading}
+          startIcon={loading ? <CircularProgress size={20} /> : null}
         >
           Sign Up
         </Button>
@@ -134,7 +195,7 @@ export default function SignupPage() {
           type="link"
           fullWidth
           href="/login"
-          disabled={isPending}
+          disabled={loading}
         >
           Already have an account?
         </Button>
