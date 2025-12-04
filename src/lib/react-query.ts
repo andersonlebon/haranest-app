@@ -1,3 +1,4 @@
+import { PropertyParams } from '@/db/dtos/properties.dto';
 import { QueryClient } from '@tanstack/react-query';
 
 // 🚀 Configuration optimisée de React Query
@@ -6,7 +7,6 @@ export const queryClient = new QueryClient({
     queries: {
       // ⏱️ Configuration des timeouts
       staleTime: 5 * 60 * 1000, // 5 minutes
-      cacheTime: 10 * 60 * 1000, // 10 minutes
       retry: 3, // 3 tentatives en cas d'erreur
       retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
       
@@ -30,5 +30,5 @@ export const queryClient = new QueryClient({
 export const QUERY_KEYS = {
   properties: ['properties'] as const,
   property: (id: number) => ['property', id] as const,
-  propertiesWithFilters: (filters: any) => ['properties', filters] as const,
+  propertiesWithFilters: (filters: Partial<PropertyParams>) => ['properties', filters] as const,
 } as const;

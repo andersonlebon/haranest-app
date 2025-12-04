@@ -42,7 +42,7 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 
 export default function AppAppBar() {
   const [open, setOpen] = React.useState(false);
-  const { user, signOut } = useAuth(); // 🎯 integrated
+  const { user, signOut, profile } = useAuth(); // 🎯 integrated
   const { mode, toggleMode } = useThemeContext();
 
 
@@ -127,12 +127,12 @@ export default function AppAppBar() {
             )}
 
             {/* If authenticated show Avatar */}
-            {user && (
+            {user && profile && (
               <>
                 <IconButton onClick={handleAvatarClick} sx={{ p: 0 }}>
                   <Avatar
-                    alt={user.fullName || 'User'}
-                    src={user.avatarUrl || ''}
+                    alt={profile?.fullName || 'User'}
+                    src={profile?.avatarUrl || ''}
                     sx={{
                       width: 40,
                       height: 40,
@@ -160,7 +160,7 @@ export default function AppAppBar() {
                   }}
                 >
                   <Box sx={{ px: 2, py: 1.5 }}>
-                    <Typography fontWeight={600}>{user.fullName}</Typography>
+                    <Typography fontWeight={600}>{profile.fullName}</Typography>
                     <Typography variant="body2" color="text.secondary">
                       {user.email}
                     </Typography>

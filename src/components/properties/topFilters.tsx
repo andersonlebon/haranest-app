@@ -39,7 +39,7 @@ export const PROPERTY_TYPES = [
   { label: 'Farmhouse', value: 'farmhouse', icon: '🚜' },
   { label: 'Bungalow', value: 'bungalow', icon: '🏡' },
   { label: 'Other', value: 'other', icon: '✨' },
-];
+] as const;
 
 function SampleNextArrow(props: { onClick?: () => void }) {
   const { onClick } = props;

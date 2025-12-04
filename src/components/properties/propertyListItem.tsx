@@ -47,7 +47,7 @@ export default function PropertyListItem({ property }: { property: PropertyRespo
               boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
             }}
           >
-            <ImageSlide property={property} />
+            <ImageSlide property={property} page={'list'} />
           </Box>
         </Grid>
 

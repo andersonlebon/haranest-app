@@ -18,8 +18,8 @@ import ImageUploader from "./ImageUploader";
 import { uploadPropertyImages } from "@/hooks/useProperties/services";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PropertyFormValues, propertySchema } from "@/db/dtos/properties.dto";
 import { propertyTypes, propertyFeatures, statuses } from "@/utils/constants";
+import { PropertyFormValues, propertySchema } from "@/db/validations/properties.validation";
 
 /* -------------------------------------------------------------------------- */
 /* Notes sur les changements
@@ -71,8 +71,8 @@ export function PropertyForm({
     setValue,
     watch,
     formState: { errors },
-  } = useForm<PropertyFormValues>({
-    resolver: zodResolver(propertySchema) as any,
+  } = useForm<any>({
+    resolver: zodResolver(propertySchema),
     defaultValues: {
       title: "",
       description: "",
@@ -119,7 +119,7 @@ export function PropertyForm({
 
   const handleRemoveAmenity = useCallback(
     (amenity: string) => {
-      setValue("amenities", amenities.filter((x) => x !== amenity));
+      setValue("amenities", amenities.filter((x: string) => x !== amenity));
     },
     [amenities, setValue]
   );
@@ -129,10 +129,10 @@ export function PropertyForm({
     (feature: PropertyFeature) => {
     if (features.includes(feature)) {
         const next = features.filter((x) => x !== feature) as PropertyFeature[];
-        setValue("features", next as any);
+        setValue("features", next);
     } else {
         const next = [...features, feature] as PropertyFeature[];
-        setValue("features", next as any);
+        setValue("features", next);
     }
     },
     [features, setValue]
@@ -149,7 +149,7 @@ export function PropertyForm({
 
   const handleRemoveImage = useCallback(
     (img: string) => {
-      setValue("images", images.filter((x) => x !== img));
+      setValue("images", images.filter((x: string) => x !== img));
     },
     [images, setValue]
   );
@@ -189,7 +189,7 @@ export function PropertyForm({
   return (
     <Box
       component="form"
-      onSubmit={handleSubmit((data) => onSubmit(data as PropertyFormValues))}
+      onSubmit={handleSubmit((data) => onSubmit(data as any))}
       sx={{ display: "flex", flexDirection: "column", gap: 4 }}
     >
       {/* -------------------------------------------------------------- */}
@@ -330,6 +330,7 @@ export function PropertyForm({
                 render={({ field }) => (
                   <TextField
                     {...field}
+                    name={name}
                     type="number"
                     label={label}
                     fullWidth
@@ -357,6 +358,7 @@ export function PropertyForm({
                 render={({ field }) => (
                   <TextField
                     {...field}
+                    name={name}
                     label={label}
                     type={type}
                     fullWidth
@@ -395,7 +397,7 @@ export function PropertyForm({
         </Box>
 
         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-          {amenities.map((amenity) => (
+          {amenities.map((amenity: string) => (
             <Chip
               key={amenity}
               label={amenity}
@@ -458,7 +460,7 @@ export function PropertyForm({
               try {
                 const uploadedUrls = await uploadPropertyImages(files);
                 setValue("images", [...images, ...uploadedUrls]);
-              } catch (e: any) {
+              } catch (e: unknown) {
                 console.error(e);
                 
               }
@@ -467,7 +469,7 @@ export function PropertyForm({
         </Box>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {images.map((img, idx) => (
+          {images.map((img: string, idx: number) => (
             <div key={idx}>
               <Box position="relative">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
