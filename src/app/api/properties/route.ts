@@ -1,3 +1,4 @@
+import { PropertyParams } from "@/db/dtos/properties.dto";
 import { PropertyRepository } from "@/db/repositories/property.repository";
 import { propertySchema } from "@/db/validations/properties.validation";
 import { NextResponse } from "next/server";
@@ -27,7 +28,7 @@ export async function GET(req: Request) {
     features: getArrayParam("features"),
     propertyType: searchParams.get("propertyType") ?? undefined,
     search: searchParams.get("search") ?? undefined,
-  };
+  } as PropertyParams
 
   try {
     const data = await PropertyRepository.findAll({ page, perPage, filters });
