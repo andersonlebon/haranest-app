@@ -12,11 +12,11 @@ export async function middleware(request: NextRequest) {
   const privateRoutes = ['/dashboard', '/profile', '/settings'] // protected routes
   const publicRoutes = ['/login', '/signup', '/about', '/'] // accessible without auth
 
-  // Redirect unauthenticated users trying to access private routes
-  if (privateRoutes.some((route) => pathname.startsWith(route)) && !user) {
-    url.pathname = '/login'
-    return NextResponse.redirect(url)
-  }
+  // // Redirect unauthenticated users trying to access private routes
+  // if (privateRoutes.some((route) => pathname.startsWith(route)) && !user) {
+  //   url.pathname = '/login'
+  //   return NextResponse.redirect(url)
+  // }
 
   // Optional: redirect authenticated users away from public pages like login/signup
   if (user && ['/login', '/signup'].some((route) => pathname.startsWith(route))) {

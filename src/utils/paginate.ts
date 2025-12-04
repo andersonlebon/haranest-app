@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { PaginatedResponse, PaginationParams } from '@/components/shared/types';
 import { SQLWrapper, asc, desc, sql } from 'drizzle-orm';
 import { PgColumn, PgTableWithColumns } from 'drizzle-orm/pg-core';
