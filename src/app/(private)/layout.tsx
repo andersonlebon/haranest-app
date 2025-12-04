@@ -1,3 +1,5 @@
+"use client";
+
 import { PrivateRoute } from "@/components/auth/PrivateRoute";
 
 

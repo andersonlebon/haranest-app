@@ -1,3 +1,4 @@
+"use client"
 import React, { Suspense } from 'react';
 import LoginForm from "@/components/auth/login";
 
