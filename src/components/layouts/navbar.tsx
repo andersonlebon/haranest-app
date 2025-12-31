@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 import { styled, alpha } from '@mui/material/styles';
 import {
   AppBar,
@@ -23,6 +24,16 @@ import { useAuth } from '@/context/AuthContext';
 import { useThemeContext } from '@/context/ThemeContext';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+import PersonIcon from '@mui/icons-material/Person';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import HomeIcon from '@mui/icons-material/Home';
+import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import PhoneIcon from '@mui/icons-material/Phone';
+import BadgeIcon from '@mui/icons-material/Badge';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: 'flex',
@@ -155,31 +166,141 @@ export default function AppAppBar() {
                     sx: {
                       mt: 1.5,
                       borderRadius: 3,
-                      minWidth: 220,
+                      minWidth: 280,
+                      maxWidth: 320,
                     },
                   }}
+                  transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                  anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                 >
-                  <Box sx={{ px: 2, py: 1.5 }}>
-                    <Typography fontWeight={600}>{profile.fullName}</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {user.email}
-                    </Typography>
+                  {/* Profile Header Section */}
+                  <Box sx={{ px: 2, py: 2, bgcolor: 'primary.main', color: 'primary.contrastText' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
+                      <Avatar
+                        alt={profile?.fullName || 'User'}
+                        src={profile?.avatarUrl || ''}
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          border: '2px solid rgba(255,255,255,0.3)',
+                        }}
+                      />
+                      <Box sx={{ flex: 1, minWidth: 0 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                          <Typography fontWeight={600} sx={{ fontSize: '0.95rem' }}>
+                            {profile.fullName || 'User'}
+                          </Typography>
+                          {profile.isVerified && (
+                            <VerifiedUserIcon sx={{ fontSize: 18, color: 'success.light' }} />
+                          )}
+                        </Box>
+                        <Typography variant="body2" sx={{ opacity: 0.9, fontSize: '0.75rem' }}>
+                          {user.email}
+                        </Typography>
+                      </Box>
+                    </Box>
+                    
+                    {/* Profile Details */}
+                    <Box sx={{ mt: 1.5, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                      {profile.role && (
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, fontSize: '0.75rem' }}>
+                          <BadgeIcon sx={{ fontSize: 14, opacity: 0.8 }} />
+                          <Typography variant="caption" sx={{ textTransform: 'capitalize', opacity: 0.9 }}>
+                            {profile.role.replace(/_/g, ' ')}
+                          </Typography>
+                        </Box>
+                      )}
+                      {(profile.city || profile.country) && (
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, fontSize: '0.75rem' }}>
+                          <LocationOnIcon sx={{ fontSize: 14, opacity: 0.8 }} />
+                          <Typography variant="caption" sx={{ opacity: 0.9 }}>
+                            {[profile.city, profile.country].filter(Boolean).join(', ') || 'Not set'}
+                          </Typography>
+                        </Box>
+                      )}
+                      {profile.phoneNumber && (
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, fontSize: '0.75rem' }}>
+                          <PhoneIcon sx={{ fontSize: 14, opacity: 0.8 }} />
+                          <Typography variant="caption" sx={{ opacity: 0.9 }}>
+                            {profile.phoneNumber}
+                          </Typography>
+                        </Box>
+                      )}
+                    </Box>
                   </Box>
 
                   <Divider />
 
-                  <MenuItem component="a" href="/profile">Profile</MenuItem>
-                  <MenuItem component="a" href="/dashboard">Dashboard</MenuItem>
+                  {/* Navigation Links */}
+                  <MenuItem 
+                    component={Link}
+                    href="/dashboard"
+                    onClick={handleMenuClose}
+                    sx={{ py: 1.5 }}
+                  >
+                    <DashboardIcon sx={{ mr: 2, fontSize: 20 }} />
+                    Dashboard
+                  </MenuItem>
+                  
+                  <MenuItem 
+                    component={Link}
+                    href="/dashboard/properties"
+                    onClick={handleMenuClose}
+                    sx={{ py: 1.5 }}
+                  >
+                    <ListAltIcon sx={{ mr: 2, fontSize: 20 }} />
+                    My Properties
+                  </MenuItem>
+
+                  <MenuItem 
+                    component={Link}
+                    href="/properties"
+                    onClick={handleMenuClose}
+                    sx={{ py: 1.5 }}
+                  >
+                    <HomeIcon sx={{ mr: 2, fontSize: 20 }} />
+                    Browse Listings
+                  </MenuItem>
+
+                  <MenuItem 
+                    component={Link}
+                    href="/profile"
+                    onClick={handleMenuClose}
+                    sx={{ py: 1.5 }}
+                  >
+                    <PersonIcon sx={{ mr: 2, fontSize: 20 }} />
+                    My Profile
+                  </MenuItem>
+
+                  <MenuItem 
+                    component={Link}
+                    href="/settings"
+                    onClick={handleMenuClose}
+                    sx={{ py: 1.5 }}
+                  >
+                    <SettingsIcon sx={{ mr: 2, fontSize: 20 }} />
+                    Settings
+                  </MenuItem>
 
                   <Divider />
 
+                  {/* Logout */}
                   <MenuItem
                     onClick={() => {
-                      signOut();
                       handleMenuClose();
+                      signOut();
                     }}
-                    sx={{ color: 'error.main', fontWeight: 600 }}
+                    sx={{ 
+                      color: 'error.main', 
+                      fontWeight: 600,
+                      py: 1.5,
+                      '&:hover': {
+                        bgcolor: 'error.light',
+                        color: 'error.contrastText',
+                      }
+                    }}
                   >
+                    <LogoutIcon sx={{ mr: 2, fontSize: 20 }} />
                     Logout
                   </MenuItem>
                 </Menu>

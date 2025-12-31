@@ -4,7 +4,7 @@ import axiosClient from "@/lib/axiosClient";
 
 
 class PropertyService {
-  private baseUrl = "/api/properties";
+  private baseUrl = "/properties";
 
   // ✅ Get all properties with pagination
   async getAll(
