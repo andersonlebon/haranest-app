@@ -8,7 +8,7 @@ import { profiles } from '@/db/schema/profiles';
 import { eq } from "drizzle-orm";
 import { ProfileResponseDto } from '@/db/dtos/profiles.dto';
 import { useGetProfile } from '@/hooks/useProfile';
-import { redirect, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 interface Response {
   error: string | null;
@@ -95,9 +95,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signUp = async (formData: FormData) => {
     setLoading(true);
     const { error } = await signup(formData);
-    if (error) throw error;
+    if (error) {
+      setLoading(false);
+      console.log('Signup error:', error);
+      setResponse({ error: error?.message || 'Signup failed', success: null });
+      return;
+    }
     setLoading(false);
-    redirect('/');
+    setResponse({ error: null, success: "Account created successfully" });
+    router.push("/login");
+    router.refresh();
   }
 
   return (
