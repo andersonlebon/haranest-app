@@ -1,4 +1,4 @@
-import { DATABASE_URL } from "@/config";
+import { DATABASE_URL, IS_PRODUCTION } from "@/config";
 import { defineConfig } from "drizzle-kit";
 
 console.log("DATABASE_URL", DATABASE_URL);
@@ -9,7 +9,7 @@ export default defineConfig({
   out: "./src/db/drizzle",
   dbCredentials: {
     url: DATABASE_URL,
-    ssl: process.env.NODE_ENV === 'production' 
+    ssl: IS_PRODUCTION 
   },
 
   extensionsFilters: ['postgis'],

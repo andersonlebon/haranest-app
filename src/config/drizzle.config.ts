@@ -1,13 +1,9 @@
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
-import { DATABASE_URL as EXPORTED_DATABASE_URL } from '.';
+import { DATABASE_URL } from '.';
 
  
-const effectiveDatabaseUrl =
-  EXPORTED_DATABASE_URL ||
-  process.env.DATABASE_URL ||
-  process.env.NEXT_PUBLIC_DATABASE_URL ||
-  '';
+const effectiveDatabaseUrl = DATABASE_URL;
 
 // Ensure we never try to initialize with an empty URL
 if (!effectiveDatabaseUrl) {
