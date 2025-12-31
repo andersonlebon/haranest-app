@@ -11,7 +11,7 @@ export default function PropertiesPage() {
   const [loading, setLoading] = useState(true);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
 
-  // S'assurer que properties est toujours un tableau
+  // Ensure properties is always an array
   const safeProperties = Array.isArray(properties) ? properties : [];
 
   useEffect(() => {
@@ -24,12 +24,12 @@ export default function PropertiesPage() {
       const response = await fetch("/api/properties");
       if (response.ok) {
         const data = await response.json();
-        // L'API retourne un objet paginé, on extrait le tableau des propriétés
+        // API returns a paginated object, extract the properties array
         setProperties(data.data || []);
       }
     } catch (error) {
-      console.error("Erreur lors du chargement des propriétés:", error);
-      setProperties([]); // S'assurer que properties est toujours un tableau
+      console.error("Error while loading properties:", error);
+      setProperties([]); // Ensure properties is always an array
     } finally {
       setLoading(false);
     }
@@ -49,10 +49,10 @@ export default function PropertiesPage() {
       
         await fetchProperties();
       } else {
-        alert('Erreur lors de la suppression.');
+        alert('Error during deletion.');
       }
     } catch (error) {
-      alert('Erreur lors de la suppression.');
+      alert('Error during deletion.');
     } finally {
       setLoading(false);
     }
@@ -66,10 +66,10 @@ export default function PropertiesPage() {
             <div className="flex justify-between items-center mb-6">
               <div>
                 <h1 className="text-3xl font-bold text-gray-800">
-                  Mes propriétés
+                  My Properties
                 </h1>
                 <p className="text-gray-600 mt-2">
-                  Gérez vos propriétés et ajoutez de nouvelles annonces
+                  Manage your properties and add new listings
                 </p>
               </div>
               <div className="flex gap-3">
@@ -80,7 +80,7 @@ export default function PropertiesPage() {
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
-                  Ajouter une propriété
+                  Add Property
                 </button>
                 <button
                   onClick={() => router.push("/dashboard/properties/edit")}
@@ -89,12 +89,12 @@ export default function PropertiesPage() {
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
-                  Modifier
+                  Edit
                 </button>
               </div>
             </div>
 
-            {/* Statistiques */}
+            {/* Statistics */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
               <div className="bg-blue-50 p-4 rounded-lg">
                 <div className="flex items-center">
@@ -118,7 +118,7 @@ export default function PropertiesPage() {
                     </svg>
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-500">Disponibles</p>
+                    <p className="text-sm font-medium text-gray-500">Available</p>
                     <p className="text-2xl font-semibold text-gray-900">
                       {safeProperties.filter(p => p.status === 'available').length}
                     </p>
@@ -134,7 +134,7 @@ export default function PropertiesPage() {
                     </svg>
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-500">En attente</p>
+                    <p className="text-sm font-medium text-gray-500">Pending</p>
                     <p className="text-2xl font-semibold text-gray-900">
                       {safeProperties.filter(p => p.status === 'pending').length}
                     </p>
@@ -150,7 +150,7 @@ export default function PropertiesPage() {
                     </svg>
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-500">Vendues</p>
+                    <p className="text-sm font-medium text-gray-500">Sold</p>
                     <p className="text-2xl font-semibold text-gray-900">
                       {safeProperties.filter(p => p.status === 'sold').length}
                     </p>

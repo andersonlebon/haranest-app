@@ -1,32 +1,32 @@
 import { PropertyParams } from '@/db/dtos/properties.dto';
 import { QueryClient } from '@tanstack/react-query';
 
-// 🚀 Configuration optimisée de React Query
+// 🚀 Optimized React Query configuration
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // ⏱️ Configuration des timeouts
+      // ⏱️ Timeout configuration
       staleTime: 5 * 60 * 1000, // 5 minutes
-      retry: 3, // 3 tentatives en cas d'erreur
+      retry: 3, // 3 retry attempts on error
       retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
       
-      // 🎯 Configuration de la revalidation
-      refetchOnWindowFocus: false, // Évite les refetch inutiles
-      refetchOnMount: true, // Refetch au montage
-      refetchOnReconnect: true, // Refetch lors de la reconnexion
+      // 🎯 Revalidation configuration
+      refetchOnWindowFocus: false, // Avoid unnecessary refetches
+      refetchOnMount: true, // Refetch on mount
+      refetchOnReconnect: true, // Refetch on reconnect
       
-      // 🔄 Configuration du réseau
-      networkMode: 'online', // Seulement quand en ligne
+      // 🔄 Network configuration
+      networkMode: 'online', // Only when online
     },
     mutations: {
-      // 🔄 Configuration des mutations
-      retry: 1, // 1 tentative pour les mutations
+      // 🔄 Mutation configuration
+      retry: 1, // 1 retry attempt for mutations
       networkMode: 'online',
     },
   },
 });
 
-// 🎯 Configuration des query keys (pour éviter les erreurs de typage)
+// 🎯 Query keys configuration (to avoid typing errors)
 export const QUERY_KEYS = {
   properties: ['properties'] as const,
   property: (id: number) => ['property', id] as const,

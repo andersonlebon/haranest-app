@@ -19,7 +19,7 @@ export async function fetchProperties(params: FiltersParams): Promise<PaginatedR
     const queryString = createQueryStrings(params);
     const controller = new AbortController();
     
-    // Timeout après 30s pour éviter les annulations trop agressives en dev
+    // Timeout after 30s to avoid aggressive cancellations in dev
     const timeoutId = setTimeout(() => controller.abort(), 30000);
     
     const response = await fetch(`/api/properties${queryString}`, {
@@ -36,7 +36,7 @@ export async function fetchProperties(params: FiltersParams): Promise<PaginatedR
       const errorData = await response.json().catch(() => ({}));
       throw new Error(
         errorData.message || 
-        `Erreur ${response.status}: ${response.statusText}`
+        `Error ${response.status}: ${response.statusText}`
       );
     }
     
@@ -44,21 +44,21 @@ export async function fetchProperties(params: FiltersParams): Promise<PaginatedR
   } catch (error) {
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
-        throw new Error('La requête a pris trop de temps');
+        throw new Error('Request took too long');
       }
       throw error;
     }
-    throw new Error('Erreur inconnue lors de la récupération des propriétés');
+    throw new Error('Unknown error while fetching properties');
   }
 }
 
-//  ervice pour récupérer une propriété spécifique
+// Service to fetch a specific property
 export async function fetchProperty(id: number): Promise<PropertyResponseDto> {
   try {
     const response = await fetch(`/api/properties/${id}`, {
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'max-age=600', // Cache plus long pour les détails
+        'Cache-Control': 'max-age=600', // Longer cache for details
       },
     });
     
@@ -66,7 +66,7 @@ export async function fetchProperty(id: number): Promise<PropertyResponseDto> {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(
         errorData.message || 
-        `Propriété non trouvée (${response.status})`
+        `Property not found (${response.status})`
       );
     }
     
@@ -75,7 +75,7 @@ export async function fetchProperty(id: number): Promise<PropertyResponseDto> {
     if (error instanceof Error) {
       throw error;
     }
-    throw new Error('Erreur lors de la récupération de la propriété');
+    throw new Error('Error while fetching property');
   }
 }
 
@@ -94,7 +94,7 @@ export async function createProperty(data: CreatePropertyDto): Promise<PropertyR
       const errorData = await response.json().catch(() => ({}));
       throw new Error(
         errorData.message || 
-        `Erreur lors de la création (${response.status})`
+        `Error during creation (${response.status})`
       );
     }
     
@@ -103,7 +103,7 @@ export async function createProperty(data: CreatePropertyDto): Promise<PropertyR
     if (error instanceof Error) {
       throw error;
     }
-    throw new Error('Erreur lors de la création de la propriété');
+    throw new Error('Error while creating property');
   }
 }
 
@@ -122,7 +122,7 @@ export async function updateProperty(id: number, data: Partial<PropertyResponseD
       const errorData = await response.json().catch(() => ({}));
       throw new Error(
         errorData.message || 
-        `Erreur lors de la mise à jour (${response.status})`
+        `Error during update (${response.status})`
       );
     }
     
@@ -131,7 +131,7 @@ export async function updateProperty(id: number, data: Partial<PropertyResponseD
     if (error instanceof Error) {
       throw error;
     }
-    throw new Error('Erreur lors de la mise à jour de la propriété');
+    throw new Error('Error while updating property');
   }
 }
 
@@ -146,14 +146,14 @@ export async function deleteProperty(id: number): Promise<void> {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(
         errorData.message || 
-        `Erreur lors de la suppression (${response.status})`
+        `Error during deletion (${response.status})`
       );
     }
   } catch (error) {
     if (error instanceof Error) {
       throw error;
     }
-    throw new Error('Erreur lors de la suppression de la propriété');
+    throw new Error('Error while deleting property');
   }
 }
 
@@ -173,7 +173,7 @@ export async function uploadPropertyImages(files: File[], folder?: string): Prom
       .upload(path, file, { upsert: false, cacheControl: '3600', contentType: file.type });
 
     if (uploadError) {
-      throw new Error(`Erreur upload: ${uploadError.message}`);
+      throw new Error(`Upload error: ${uploadError.message}`);
     }
 
     const { data } = supabase.storage.from(bucket).getPublicUrl(path);
@@ -213,7 +213,7 @@ export async function getPropertyReviews(propertyId: string | number): Promise<R
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `Erreur ${response.status}: ${response.statusText}`);
+      throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`);
     }
 
     const json = await response.json();
@@ -221,11 +221,11 @@ export async function getPropertyReviews(propertyId: string | number): Promise<R
   } catch (error) {
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
-        throw new Error('La requête a pris trop de temps');
+        throw new Error('Request took too long');
       }
       throw error;
     }
-    throw new Error('Erreur inconnue lors de la récupération des avis');
+    throw new Error('Unknown error while fetching reviews');
   }
 }
 
@@ -248,7 +248,7 @@ export async function postPropertyReview(propertyId: string | number, payload: C
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `Erreur lors de la création (${response.status})`);
+      throw new Error(errorData.message || `Error during creation (${response.status})`);
     }
 
     const json = await response.json();
@@ -258,6 +258,6 @@ export async function postPropertyReview(propertyId: string | number, payload: C
     if (error instanceof Error) {
       throw error;
     }
-    throw new Error("Erreur lors de la création de l'avis");
+    throw new Error("Error while creating review");
   }
 }

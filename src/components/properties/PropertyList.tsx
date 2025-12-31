@@ -25,7 +25,7 @@ export function PropertyList({
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
 
-  // S'assurer que properties est toujours un tableau
+  // Ensure properties is always an array
   const safeProperties = Array.isArray(properties) ? properties : [];
 
   const getStatusColor = (status: string) => {
@@ -50,31 +50,31 @@ export function PropertyList({
   const getStatusText = (status: string) => {
     switch (status) {
       case "available":
-        return "Disponible";
+        return "Available";
       case "sold":
-        return "Vendu";
+        return "Sold";
       case "pending":
-        return "En attente";
+        return "Pending";
       case "rented":
-        return "Loué";
+        return "Rented";
       case "off_market":
-        return "Hors marché";
+        return "Off Market";
       case "under_construction":
-        return "En construction";
+        return "Under Construction";
       default:
         return status;
     }
   };
 
   const formatPrice = (price: number, currency: string) => {
-    return new Intl.NumberFormat('fr-FR', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: currency,
     }).format(price);
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('fr-FR', {
+    return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
@@ -101,14 +101,14 @@ export function PropertyList({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
           </svg>
         </div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">Aucune propriété</h3>
-        <p className="text-gray-500 mb-4">Vous n'avez pas encore de propriétés.</p>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">No Properties</h3>
+        <p className="text-gray-500 mb-4">You don't have any properties yet.</p>
         {showActions && (
           <button
             onClick={() => router.push("/dashboard/properties/add")}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
-            Ajouter votre première propriété
+            Add Your First Property
           </button>
         )}
       </div>
@@ -147,7 +147,7 @@ export function PropertyList({
               )}
             </div>
 
-            {/* Contenu */}
+            {/* Content */}
             <div className="flex-1 min-w-0">
               <div className="flex justify-between items-start mb-2">
                 <h3 className="text-lg font-semibold text-gray-900 truncate">
@@ -168,7 +168,7 @@ export function PropertyList({
                     <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
                     </svg>
-                    {property.bedrooms} ch.
+                    {property.bedrooms} bed
                   </span>
                 )}
                 {property.bathrooms && (
@@ -176,7 +176,7 @@ export function PropertyList({
                     <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M10 3h4M3 10l3-3m0 0l3 3m-3-3v18" />
                     </svg>
-                    {property.bathrooms} sdb
+                    {property.bathrooms} bath
                   </span>
                 )}
                 {property.size && (
@@ -184,7 +184,7 @@ export function PropertyList({
                     <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
                     </svg>
-                    {property.size} m²
+                    {property.size} sqft
                   </span>
                 )}
               </div>
@@ -225,7 +225,7 @@ export function PropertyList({
                   }}
                   className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
                 >
-                  Modifier
+                  Edit
                 </button>
                 <button
                   onClick={(e) => {
@@ -234,7 +234,7 @@ export function PropertyList({
                   }}
                   className="px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 transition-colors"
                 >
-                  Voir
+                  View
                 </button>
                 <button
                   onClick={(e) => {
@@ -245,7 +245,7 @@ export function PropertyList({
                   }}
                   className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors"
                 >
-                  Supprimer
+                  Delete
                 </button>
               </div>
             )}
@@ -259,15 +259,15 @@ export function PropertyList({
       onClose={() => setConfirmOpen(false)}
       aria-labelledby="confirm-delete-title"
     >
-      <DialogTitle id="confirm-delete-title">Confirmer la suppression</DialogTitle>
+      <DialogTitle id="confirm-delete-title">Confirm Deletion</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Êtes-vous sûr de vouloir supprimer cette propriété ? Cette action est irréversible.
+          Are you sure you want to delete this property? This action cannot be undone.
         </DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={() => setConfirmOpen(false)} variant="outlined">
-          Annuler
+          Cancel
         </Button>
         <Button
           color="error"
@@ -280,7 +280,7 @@ export function PropertyList({
             setPendingDeleteId(null);
           }}
         >
-          Supprimer
+          Delete
         </Button>
       </DialogActions>
     </Dialog>

@@ -16,7 +16,7 @@ export default function PropertyActionsPage() {
   const [loading, setLoading] = useState(true);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
 
-  // Actions valides
+  // Valid actions
   const validActions = ["add", "edit", "list", "view"];
   
   useEffect(() => {
@@ -36,12 +36,12 @@ export default function PropertyActionsPage() {
       const response = await fetch("/api/properties");
       if (response.ok) {
         const data = await response.json();
-        // L'API retourne un objet paginé, on extrait le tableau des propriétés
+        // API returns a paginated object, extract the properties array
         setProperties(data.data || []);
       }
     } catch (error) {
-      console.error("Erreur lors du chargement des propriétés:", error);
-      setProperties([]); // S'assurer que properties est toujours un tableau
+      console.error("Error while loading properties:", error);
+      setProperties([]); // Ensure properties is always an array
     } finally {
       setLoading(false);
     }
@@ -67,7 +67,7 @@ export default function PropertyActionsPage() {
       setProperties(prev => [created as unknown as Property, ...prev]);
       router.push("/dashboard/properties/list");
     } catch (e: any) {
-      alert(e?.message || "Erreur lors de la création de la propriété");
+      alert(e?.message || "Error while creating property");
     }
   };
 
@@ -78,7 +78,7 @@ export default function PropertyActionsPage() {
           <div className="max-w-4xl mx-auto">
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-2xl font-bold mb-6 text-gray-800">
-                Ajouter une nouvelle propriété
+                Add New Property
               </h2>
               <PropertyForm 
                 onSubmit={handlePropertyCreate}
@@ -94,7 +94,7 @@ export default function PropertyActionsPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h2 className="text-2xl font-bold mb-6 text-gray-800">
-                  Sélectionner une propriété à modifier
+                  Select a Property to Edit
                 </h2>
                 <PropertyList 
                   properties={properties}
@@ -106,7 +106,7 @@ export default function PropertyActionsPage() {
               
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h2 className="text-2xl font-bold mb-6 text-gray-800">
-                  Modifier la propriété
+                  Edit Property
                 </h2>
                 {selectedProperty ? (
                   <PropertyEditForm 
@@ -116,7 +116,7 @@ export default function PropertyActionsPage() {
                   />
                 ) : (
                   <div className="text-center text-gray-500 py-8">
-                    <p>Sélectionnez une propriété pour la modifier</p>
+                    <p>Select a property to edit</p>
                   </div>
                 )}
               </div>
@@ -130,13 +130,13 @@ export default function PropertyActionsPage() {
             <div className="bg-white rounded-lg shadow-md p-6">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-800">
-                  Mes propriétés
+                  My Properties
                 </h2>
                 <button
                   onClick={() => router.push("/dashboard/properties/add")}
                   className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                 >
-                  Ajouter une propriété
+                  Add Property
                 </button>
               </div>
               <PropertyList 
@@ -169,11 +169,11 @@ export default function PropertyActionsPage() {
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Titre</label>
+                      <label className="block text-sm font-medium text-gray-700">Title</label>
                       <p className="text-lg">{selectedProperty.title}</p>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Prix</label>
+                      <label className="block text-sm font-medium text-gray-700">Price</label>
                       <p className="text-lg font-semibold text-green-600">
                         {selectedProperty.price} {selectedProperty.currency}
                       </p>
@@ -186,7 +186,7 @@ export default function PropertyActionsPage() {
                 </div>
               ) : (
                 <div className="text-center text-gray-500 py-8">
-                  <p>Aucune propriété sélectionnée</p>
+                  <p>No property selected</p>
                 </div>
               )}
             </div>

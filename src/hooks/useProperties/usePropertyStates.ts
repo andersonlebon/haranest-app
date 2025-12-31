@@ -7,7 +7,7 @@ export interface PropertyStates {
   isSuccess: boolean;
 }
 
-// Hook pour gérer les états des propriétés
+// Hook to manage property states
 export function usePropertyStates() {
   const [states, setStates] = useState<PropertyStates>({
     isLoading: false,
@@ -16,7 +16,7 @@ export function usePropertyStates() {
     isSuccess: false,
   });
 
-  // Fonction pour démarrer le loading
+  // Function to start loading
   const startLoading = useCallback(() => {
     setStates(prev => ({
       ...prev,
@@ -27,7 +27,7 @@ export function usePropertyStates() {
     }));
   }, []);
 
-  // Fonction pour marquer comme succès
+  // Function to mark as success
   const setSuccess = useCallback(() => {
     setStates(prev => ({
       ...prev,
@@ -38,7 +38,7 @@ export function usePropertyStates() {
     }));
   }, []);
 
-  // Fonction pour marquer comme erreur
+  // Function to mark as error
   const setError = useCallback((error: string) => {
     setStates(prev => ({
       ...prev,
@@ -49,7 +49,7 @@ export function usePropertyStates() {
     }));
   }, []);
 
-  // Fonction pour réinitialiser les états
+  // Function to reset states
   const resetStates = useCallback(() => {
     setStates({
       isLoading: false,

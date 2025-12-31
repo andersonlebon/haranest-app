@@ -32,20 +32,20 @@ import { PropertyFormValues, propertySchema } from "@/db/validations/properties.
 /* -------------------------------------------------------------------------- */
 
 const characteristics = [
-  { name: "bedrooms", label: "Chambres" },
-  { name: "bathrooms", label: "Salles de bain" },
-  { name: "rooms", label: "Pièces" },
-  { name: "size", label: "Superficie (m²)" },
-  { name: "lotSize", label: "Taille du terrain (m²)" },
-  { name: "yearBuilt", label: "Année de construction" },
-  { name: "floors", label: "Étages" },
+  { name: "bedrooms", label: "Bedrooms" },
+  { name: "bathrooms", label: "Bathrooms" },
+  { name: "rooms", label: "Rooms" },
+  { name: "size", label: "Size (sqft)" },
+  { name: "lotSize", label: "Lot Size (sqft)" },
+  { name: "yearBuilt", label: "Year Built" },
+  { name: "floors", label: "Floors" },
 ];
 
 const locationFields = [
   { name: "locationProvince", label: "Province" },
   { name: "locationDistrict", label: "District" },
-  { name: "locationCity", label: "Ville" },
-  { name: "zip", label: "Code postal" },
+  { name: "locationCity", label: "City" },
+  { name: "zip", label: "Zip Code" },
   { name: "latitude", label: "Latitude", type: "number" as const },
   { name: "longitude", label: "Longitude", type: "number" as const },
 ];
@@ -195,7 +195,7 @@ export function PropertyForm({
       {/* -------------------------------------------------------------- */}
       {/* 🧱 Basic Information */}
       {/* -------------------------------------------------------------- */}
-      <Section title="Informations de base">
+      <Section title="Basic Information">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Controller
@@ -204,7 +204,7 @@ export function PropertyForm({
               render={({ field }) => (
                 <TextField
                   {...field}
-                  label="Titre *"
+                  label="Title *"
                   fullWidth
                   error={!!errors.title}
                   helperText={errors.title?.message as string | undefined}
@@ -220,7 +220,7 @@ export function PropertyForm({
               render={({ field }) => (
                 <TextField
                   {...field}
-                  label="Prix *"
+                  label="Price *"
                   type="number"
                   fullWidth
                   error={!!errors.price}
@@ -236,7 +236,7 @@ export function PropertyForm({
               name="currency"
               control={control}
               render={({ field }) => (
-                <TextField select label="Devise" fullWidth {...field}>
+                <TextField select label="Currency" fullWidth {...field}>
                   <MenuItem value="USD">USD</MenuItem>
                   <MenuItem value="EUR">EUR</MenuItem>
                   <MenuItem value="RWF">RWF</MenuItem>
@@ -252,7 +252,7 @@ export function PropertyForm({
               render={({ field }) => (
                 <TextField
                   select
-                  label="Type de propriété *"
+                  label="Property Type *"
                   fullWidth
                   error={!!errors.propertyType}
                   helperText={errors.propertyType?.message as string | undefined}
@@ -273,9 +273,9 @@ export function PropertyForm({
               name="rentOrSell"
               control={control}
               render={({ field }) => (
-                <TextField select label="Location ou Vente" fullWidth {...field}>
-                  <MenuItem value="sell">Vente</MenuItem>
-                  <MenuItem value="rent">Location</MenuItem>
+                <TextField select label="Rent or Sell" fullWidth {...field}>
+                  <MenuItem value="sell">Sell</MenuItem>
+                  <MenuItem value="rent">Rent</MenuItem>
                 </TextField>
               )}
             />
@@ -286,7 +286,7 @@ export function PropertyForm({
               name="status"
               control={control}
               render={({ field }) => (
-                <TextField select label="Statut" fullWidth {...field}>
+                <TextField select label="Status" fullWidth {...field}>
                   {statuses.map((s) => (
                     <MenuItem key={s.value} value={s.value}>
                       {s.label}
@@ -318,9 +318,9 @@ export function PropertyForm({
       </Section>
 
       {/* -------------------------------------------------------------- */}
-      {/* 🧱 Caractéristiques */}
+      {/* 🧱 Characteristics */}
       {/* -------------------------------------------------------------- */}
-      <Section title="Caractéristiques">
+      <Section title="Characteristics">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {characteristics.map(({ name, label }) => (
             <div key={name}>
@@ -346,9 +346,9 @@ export function PropertyForm({
       </Section>
 
       {/* -------------------------------------------------------------- */}
-      {/* 🧱 Localisation */}
+      {/* 🧱 Location */}
       {/* -------------------------------------------------------------- */}
-      <Section title="Localisation">
+      <Section title="Location">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {locationFields.map(({ name, label, type = "text" }) => (
             <div key={name}>
@@ -380,19 +380,19 @@ export function PropertyForm({
       </Section>
 
       {/* -------------------------------------------------------------- */}
-      {/* 🧱 Équipements */}
+      {/* 🧱 Amenities */}
       {/* -------------------------------------------------------------- */}
-      <Section title="Équipements">
+      <Section title="Amenities">
         <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
           <TextField
-            label="Ajouter un équipement"
+            label="Add an amenity"
             value={newAmenity}
             onChange={(e) => setNewAmenity(e.target.value)}
             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(e, handleAddAmenity)}
             fullWidth
           />
           <Button variant="contained" onClick={handleAddAmenity} startIcon={<AddIcon />}>
-            Ajouter
+            Add
           </Button>
         </Box>
 
@@ -415,9 +415,9 @@ export function PropertyForm({
       </Section>
 
       {/* -------------------------------------------------------------- */}
-      {/* 🧱 Fonctionnalités */}
+      {/* 🧱 Features */}
       {/* -------------------------------------------------------------- */}
-      <Section title="Fonctionnalités">
+      <Section title="Features">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
           {propertyFeatures.map((feature) => (
             <div key={feature}>
@@ -444,14 +444,14 @@ export function PropertyForm({
       <Section title="Images">
         <Box sx={{ display: "flex", gap: 2, mb: 2, alignItems: "center" }}>
           <TextField
-            label="URL de l'image"
+            label="Image URL"
             value={newImage}
             onChange={(e) => setNewImage(e.target.value)}
             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(e, handleAddImage)}
             fullWidth
           />
           <Button variant="contained" color="success" onClick={handleAddImage} startIcon={<AddIcon />}>
-            Ajouter
+            Add
           </Button>
 
           <ImageUploader

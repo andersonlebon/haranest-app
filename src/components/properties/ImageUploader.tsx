@@ -53,7 +53,7 @@ export default function ImageUploader({ onFiles, maxFiles = 20, accept = "image/
           className="hidden"
         />
         <div className="text-center text-sm text-gray-600">
-          Glisser-déposer des images ici, ou cliquer pour sélectionner (jpg, png, etc.).
+          Drag and drop images here, or click to select (jpg, png, etc.).
         </div>
       </div>
     </div>

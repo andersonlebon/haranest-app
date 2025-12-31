@@ -30,7 +30,6 @@ export default function RootLayout({
       </head>
       <body>
         <AppProviders>
-          <AppAppBar/>
           <Box display="flex" flexDirection="column" minHeight="100vh">
             <AppAppBar/>
               <Box display="flex" flex={1}>

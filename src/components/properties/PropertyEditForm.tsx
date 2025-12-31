@@ -126,11 +126,11 @@ export function PropertyEditForm({ property, onSuccess, onCancel }: PropertyEdit
         onSuccess(updatedProperty);
       } else {
         const error = await response.json();
-        alert(`Erreur: ${error.message || "Impossible de modifier la propriété"}`);
+        alert(`Error: ${error.message || "Unable to update property"}`);
       }
     } catch (error) {
-      console.error("Erreur lors de la modification:", error);
-      alert("Erreur lors de la modification de la propriété");
+      console.error("Error during update:", error);
+      alert("Error while updating property");
     } finally {
       setLoading(false);
     }
@@ -138,9 +138,9 @@ export function PropertyEditForm({ property, onSuccess, onCancel }: PropertyEdit
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Informations de base */}
+      {/* Basic Information */}
       <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="text-lg font-semibold mb-4">Basics informations</h3>
+        <h3 className="text-lg font-semibold mb-4">Basic Information</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -343,7 +343,7 @@ export function PropertyEditForm({ property, onSuccess, onCancel }: PropertyEdit
         </div>
       </div>
 
-      {/* Localisation */}
+      {/* Location */}
       <div className="bg-gray-50 p-4 rounded-lg">
         <h3 className="text-lg font-semibold mb-4">Location *</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -426,14 +426,14 @@ export function PropertyEditForm({ property, onSuccess, onCancel }: PropertyEdit
         </div>
       </div>
 
-      {/* Équipements et fonctionnalités */}
+      {/* Amenities and Features */}
       <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="text-lg font-semibold mb-4">Equipments and features</h3>
+        <h3 className="text-lg font-semibold mb-4">Amenities and Features</h3>
         
-        {/* Équipements */}
+        {/* Amenities */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-             Equipments
+             Amenities
           </label>
           <div className="flex gap-2 mb-2">
             <input
@@ -470,7 +470,7 @@ export function PropertyEditForm({ property, onSuccess, onCancel }: PropertyEdit
           </div>
         </div>
 
-        {/* Fonctionnalités */}
+        {/* Features */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Features
@@ -552,7 +552,7 @@ export function PropertyEditForm({ property, onSuccess, onCancel }: PropertyEdit
           disabled={loading}
           className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
         >
-          {loading ? "Modification..." : "Modifier la propriété"}
+          {loading ? "Updating..." : "Update Property"}
         </button>
       </div>
     </form>

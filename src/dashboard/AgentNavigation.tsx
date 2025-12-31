@@ -12,7 +12,7 @@ interface NavigationItem {
 
 const navigationItems: NavigationItem[] = [
   {
-    name: "Tableau de bord",
+    name: "Dashboard",
     href: "/dashboard",
     icon: (
       <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -20,37 +20,37 @@ const navigationItems: NavigationItem[] = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z" />
       </svg>
     ),
-    description: "Vue d'ensemble de vos activités"
+    description: "Overview of your activities"
   },
   {
-    name: "Mes propriétés",
+    name: "My Properties",
     href: "/dashboard/properties",
     icon: (
       <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
       </svg>
     ),
-    description: "Gérer vos propriétés"
+    description: "Manage your properties"
   },
   {
-    name: "Ajouter une propriété",
+    name: "Add Property",
     href: "/dashboard/properties/add",
     icon: (
       <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
       </svg>
     ),
-    description: "Créer une nouvelle annonce"
+    description: "Create a new listing"
   },
   {
-    name: "Modifier une propriété",
+    name: "Edit Property",
     href: "/dashboard/properties/edit",
     icon: (
       <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
       </svg>
     ),
-    description: "Modifier une propriété existante"
+    description: "Edit an existing property"
   }
 ];
 
@@ -62,14 +62,14 @@ export function AgentNavigation() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl font-bold text-gray-800">Dashboard Agent</h2>
-          <p className="text-gray-600">Gérez vos propriétés et vos annonces</p>
+          <p className="text-gray-600">Manage your properties and listings</p>
         </div>
         <div className="flex items-center space-x-4">
           <div className="text-right">
 
             {/* Waiting for Auth Logic */}
             <p className="text-sm font-medium text-gray-900">Fidele Buyana</p>
-            <p className="text-sm text-gray-500">Connecté</p>
+            <p className="text-sm text-gray-500">Connected</p>
           </div>
           <div className="h-10 w-10 bg-blue-600 rounded-full flex items-center justify-center">
             <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -116,9 +116,9 @@ export function AgentNavigation() {
         })}
       </div>
 
-      {/* Actions rapides */}
+      {/* Quick Actions */}
       <div className="mt-6 pt-6 border-t border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Actions rapides</h3>
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
         <div className="flex flex-wrap gap-3">
           <Link
             href="/dashboard/properties/add"
@@ -127,7 +127,7 @@ export function AgentNavigation() {
             <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            Nouvelle propriété
+            New Property
           </Link>
           <Link
             href="/dashboard/properties"
@@ -136,7 +136,7 @@ export function AgentNavigation() {
             <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
             </svg>
-            Voir toutes
+            View All
           </Link>
           <Link
             href="/dashboard/properties/edit"
@@ -145,7 +145,7 @@ export function AgentNavigation() {
             <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
             </svg>
-            Modifier
+            Edit
           </Link>
         </div>
       </div>

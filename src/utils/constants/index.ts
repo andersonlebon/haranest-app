@@ -32,10 +32,10 @@ export const propertyFeatures = [
   "basement",
 ] as const;
 export const statuses = [
-  { value: "available", label: "Disponible" },
-  { value: "sold", label: "Vendu" },
-  { value: "pending", label: "En attente" },
-  { value: "rented", label: "Loué" },
-  { value: "off_market", label: "Hors marché" },
-  { value: "under_construction", label: "En construction" },
+  { value: "available", label: "Available" },
+  { value: "sold", label: "Sold" },
+  { value: "pending", label: "Pending" },
+  { value: "rented", label: "Rented" },
+  { value: "off_market", label: "Off Market" },
+  { value: "under_construction", label: "Under Construction" },
 ];

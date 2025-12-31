@@ -12,10 +12,10 @@ export default function PropertyGridView({ properties }: PropertyGridViewProps) 
       <Box display="flex" justifyContent="center" alignItems="center" minHeight={200}>
         <Box textAlign="center">
           <Typography variant="h6" color="text.secondary" gutterBottom>
-            Aucune propriété trouvée
+            No Properties Found
           </Typography>
           <Typography color="text.disabled">
-            Ajustez vos filtres ou réessayez plus tard.
+            Adjust your filters or try again later.
           </Typography>
         </Box>
       </Box>

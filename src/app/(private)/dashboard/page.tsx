@@ -19,7 +19,7 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto">
           <AgentNavigation />
           
-          {/* Statistiques générales */}
+          {/* General Statistics */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div className="bg-white rounded-lg shadow-md p-6">
               <div className="flex items-center">
@@ -29,11 +29,11 @@ export default function DashboardPage() {
                   </svg>
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-lg font-semibold text-gray-900">Propriétés actives</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Active Properties</h3>
                   <p className="text-3xl font-bold text-blue-600">
                     {safeProperties.length}
                   </p>
-                  <p className="text-sm text-gray-500">+2 ce mois</p>
+                  <p className="text-sm text-gray-500">+2 this month</p>
                 </div>
               </div>
             </div>
@@ -46,9 +46,9 @@ export default function DashboardPage() {
                   </svg>
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-lg font-semibold text-gray-900">Revenus</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Revenue</h3>
                   <p className="text-3xl font-bold text-green-600">100 Dollars</p>
-                  <p className="text-sm text-gray-500">24.7 M de ce mois</p>
+                  <p className="text-sm text-gray-500">24.7 M this month</p>
                 </div>
               </div>
             </div>
@@ -62,17 +62,17 @@ export default function DashboardPage() {
                   </svg>
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-lg font-semibold text-gray-900">Vues totales</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Total Views</h3>
                   <p className="text-3xl font-bold text-yellow-600">1,247 M</p>
-                  <p className="text-sm text-gray-500">+8 % cette semaine</p>
+                  <p className="text-sm text-gray-500">+8% this week</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Activités récentes */}
+          {/* Recent Activities */}
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-6">Activités récentes</h2>
+            <h2 className="text-xl font-bold text-gray-800 mb-6">Recent Activities</h2>
             <div className="space-y-4">
               <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
                 <div className="p-2 bg-green-100 rounded-lg">
@@ -81,10 +81,10 @@ export default function DashboardPage() {
                   </svg>
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">Nouvelle propriété ajoutée</p>
-                  <p className="text-sm text-gray-500">Villa moderne à Kigali - $150,000</p>
+                  <p className="text-sm font-medium text-gray-900">New property added</p>
+                  <p className="text-sm text-gray-500">Modern Villa in Kigali - $150,000</p>
                 </div>
-                <span className="text-xs text-gray-400">Il y a 2 heures</span>
+                <span className="text-xs text-gray-400">2 hours ago</span>
               </div>
 
               <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
@@ -95,10 +95,10 @@ export default function DashboardPage() {
                   </svg>
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">Nouvelle vue sur votre propriété</p>
-                  <p className="text-sm text-gray-500">Appartement 3 chambres - 15 vues aujourd'hui</p>
+                  <p className="text-sm font-medium text-gray-900">New view on your property</p>
+                  <p className="text-sm text-gray-500">3 bedroom apartment - 15 views today</p>
                 </div>
-                <span className="text-xs text-gray-400">Il y a 4 heures</span>
+                <span className="text-xs text-gray-400">4 hours ago</span>
               </div>
 
               <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
@@ -108,10 +108,10 @@ export default function DashboardPage() {
                   </svg>
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">Propriété mise à jour</p>
-                  <p className="text-sm text-gray-500">Maison familiale - Prix modifié</p>
+                  <p className="text-sm font-medium text-gray-900">Property updated</p>
+                  <p className="text-sm text-gray-500">Family house - Price modified</p>
                 </div>
-                <span className="text-xs text-gray-400">Il y a 1 jour</span>
+                <span className="text-xs text-gray-400">1 day ago</span>
               </div>
             </div>
           </div>
