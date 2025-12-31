@@ -1,6 +1,6 @@
 import { createQueryStrings } from '@/utils/formats';
 import { CreatePropertyDto, PropertyResponseDto } from '../../db/dtos/properties.dto';
-import { PaginatedResponse, PaginationParams } from '@/components/shared/types';
+import { PaginatedResponse, PaginationParams } from '@/types/api';
 import { supabase } from '@/utils/supabase/client';
 import { SUPABASE_STORAGE_BUCKET } from '@/config';
 

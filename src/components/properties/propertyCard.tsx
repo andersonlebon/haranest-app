@@ -30,12 +30,12 @@ export default function PropertyCard({ property }: PropertyCardProps) {
         borderRadius: 3,
         overflow: 'hidden',
         cursor: 'pointer',
-        background: 'white',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+        bgcolor: 'background.paper',
+        boxShadow: (theme) => theme.shadows[2],
         transition: 'all 0.3s ease',
         '&:hover': {
           transform: 'translateY(-4px)',
-          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.15)',
+          boxShadow: (theme) => theme.shadows[8],
         },
       }}
       onClick={handleClick}

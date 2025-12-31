@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { PropertyForm } from "@/components/properties/PropertyForm";
 import { PropertyEditForm } from "@/components/properties/PropertyEditForm";
 import { PropertyList } from "@/components/properties/PropertyList";
-import { Property } from "@/components/shared/types";
+import { Property } from "@/types";
 import { useCreateProperty, useDeleteProperty } from "@/hooks/useProperties";
 
 export default function PropertyActionsPage() {

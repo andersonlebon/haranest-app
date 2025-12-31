@@ -1,7 +1,7 @@
 // src/context/ThemeContext.tsx
 'use client';
 
-import React, { createContext, useContext, ReactNode, useState, useMemo } from 'react';
+import React, { createContext, useContext, ReactNode, useState, useMemo, useEffect } from 'react';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { darkTheme, lightTheme } from '@/providers/theme';
 
@@ -22,7 +22,21 @@ interface ThemeProviderProps {
 }
 
 export const CustomThemeProvider = ({ children }: ThemeProviderProps) => {
-  const [mode, setMode] = useState<'light' | 'dark'>('light');
+  // Initialize from localStorage or default to 'light'
+  const [mode, setMode] = useState<'light' | 'dark'>(() => {
+    if (typeof window !== 'undefined') {
+      const savedMode = localStorage.getItem('themeMode') as 'light' | 'dark' | null;
+      return savedMode || 'light';
+    }
+    return 'light';
+  });
+
+  // Persist theme mode to localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('themeMode', mode);
+    }
+  }, [mode]);
 
   const toggleMode = () => setMode((prev) => (prev === 'light' ? 'dark' : 'light'));
 

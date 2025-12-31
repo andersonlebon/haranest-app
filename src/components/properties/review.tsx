@@ -11,7 +11,7 @@ import {
   Stack,
   Link,
 } from '@mui/material';
-import { getPropertyReviews, postPropertyReview } from '@/hooks/useProperties/services';
+import { reviewService } from '@/services/review.service';
 
 interface ReviewItem {
   id: number;
@@ -41,38 +41,40 @@ export default function PropertyReviews() {
     setNewReview((prev) => ({ ...prev, rating: value || 0 }));
   };
 
-   const fetchReviews = async () => {
-  try {
-    setLoading(true);
-    const pathParts = window.location.pathname.split('/');
-    const id = pathParts[pathParts.length - 1];
-    const data = await getPropertyReviews(id);
-    setItems(data || []);
-  } catch (err) {
-    console.error('Erreur fetchReviews:', err);
-  } finally {
-    setLoading(false);
-  }
-};
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
+  const fetchReviews = async () => {
+    try {
+      setLoading(true);
+      const pathParts = window.location.pathname.split('/');
+      const id = pathParts[pathParts.length - 1];
+      const data = await reviewService.getReviews(id);
+      setItems(data || []);
+    } catch (err) {
+      console.error('Erreur fetchReviews:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async () => {
-    const handleSubmit = async () => {
-  const pathParts = window.location.pathname.split('/');
-  const id = pathParts[pathParts.length - 1];
-  const payload = {
-    name: newReview.name.trim(),
-    location: newReview.location.trim(),
-    comment: newReview.review.trim(),
-    rating: newReview.rating,
-  };
-  try {
-    await postPropertyReview(id, payload);
-    setNewReview({ name: '', location: '', review: '', rating: 0 });
-    fetchReviews();
-  } catch (err) {
-    console.error('Erreur handleSubmit:', err);
-  }
-};
+    const pathParts = window.location.pathname.split('/');
+    const id = pathParts[pathParts.length - 1];
+    const payload = {
+      name: newReview.name.trim(),
+      location: newReview.location.trim(),
+      comment: newReview.review.trim(),
+      rating: newReview.rating,
+    };
+    try {
+      await reviewService.createReview(id, payload);
+      setNewReview({ name: '', location: '', review: '', rating: 0 });
+      fetchReviews();
+    } catch (err) {
+      console.error('Erreur handleSubmit:', err);
+    }
   };
 
   return (

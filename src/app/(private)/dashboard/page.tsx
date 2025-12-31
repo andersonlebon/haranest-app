@@ -3,7 +3,7 @@ import React, { use } from "react";
 import { AgentNavigation } from "@/dashboard/AgentNavigation";
 import { Schema } from "zod";
 import { db } from "@/config/drizzle.config";
-import { Property } from "@/components/shared/types";
+import { Property } from "@/types";
 import { useState } from "react";
 
 export default function DashboardPage() {

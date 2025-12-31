@@ -1,6 +1,6 @@
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { profiles, userRoleEnum } from "../schema/profiles";
-import { PaginationParams } from "@/components/shared/types";
+import { PaginationParams } from "@/types/api";
 
 // ----------------------
 // For reading data (GET)

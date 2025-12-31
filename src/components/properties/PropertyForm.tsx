@@ -15,7 +15,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import ImageUploader from "./ImageUploader";
-import { uploadPropertyImages } from "@/hooks/useProperties/services";
+import { uploadPropertyImages } from "@/utils/propertyImages";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { propertyTypes, propertyFeatures, statuses } from "@/utils/constants";
@@ -490,8 +490,8 @@ export function PropertyForm({
                     position: "absolute",
                     top: 4,
                     right: 4,
-                    backgroundColor: "white",
-                    "&:hover": { backgroundColor: "grey.100" },
+                    bgcolor: "background.paper",
+                    "&:hover": { bgcolor: "action.hover" },
                   }}
                   onClick={() => handleRemoveImage(img)}
                 >

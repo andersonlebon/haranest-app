@@ -24,13 +24,13 @@ export default function PropertyListItem({ property }: { property: PropertyRespo
         py: 3,
         mb: 2,
         borderRadius: 3,
-        background: 'white',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+        bgcolor: 'background.paper',
+        boxShadow: (theme) => theme.shadows[2],
         transition: 'all 0.3s ease',
         cursor: 'pointer',
         '&:hover': {
           transform: 'translateY(-2px)',
-          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.15)',
+          boxShadow: (theme) => theme.shadows[8],
         },
       }}
       disableGutters
@@ -39,13 +39,13 @@ export default function PropertyListItem({ property }: { property: PropertyRespo
         {/* Image Slider */}
         <Grid size={{ xs: 12, sm: 4 }}>
           <Box
-            sx={{
+            sx={(theme) => ({
               width: '100%',
               height: 200,
               borderRadius: 2,
               overflow: 'hidden',
-              boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
-            }}
+              boxShadow: theme.shadows[2],
+            })}
           >
             <ImageSlide property={property} page={'list'} />
           </Box>

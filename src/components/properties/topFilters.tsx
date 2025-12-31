@@ -111,22 +111,36 @@ export default function TopFilters({
                   onClick={() =>{
                     handleFilterChange({ propertyType: type.value })
                   }}
-                  sx={{
+                  sx={(theme) => ({
                     borderRadius: 3,
-                    border: isSelected ? '2px solid #1976d2' : '1px solid #e0e0e0',
+                    border: isSelected 
+                      ? `2px solid ${theme.palette.primary.main}` 
+                      : `1px solid ${theme.palette.divider}`,
                     textAlign: 'center',
                     width: 90,
                     height: 90,
                     cursor: 'pointer',
-                    bgcolor: isSelected ? '#e3f2fd' : 'white',
-                    boxShadow: isSelected ? '0 4px 20px rgba(25, 118, 210, 0.2)' : '0 2px 10px rgba(0, 0, 0, 0.08)',
+                    bgcolor: isSelected 
+                      ? theme.palette.mode === 'dark' 
+                        ? theme.palette.primary.dark 
+                        : theme.palette.primary.light 
+                      : 'background.paper',
+                    boxShadow: isSelected 
+                      ? theme.shadows[4] 
+                      : theme.shadows[1],
                     transition: 'all 0.3s ease',
                     '&:hover': {
                       transform: 'translateY(-2px)',
-                      boxShadow: isSelected ? '0 6px 25px rgba(25, 118, 210, 0.3)' : '0 4px 15px rgba(0, 0, 0, 0.12)',
-                      bgcolor: isSelected ? '#e3f2fd' : '#f8f9fa',
+                      boxShadow: isSelected 
+                        ? theme.shadows[8] 
+                        : theme.shadows[4],
+                      bgcolor: isSelected 
+                        ? theme.palette.mode === 'dark' 
+                          ? theme.palette.primary.dark 
+                          : theme.palette.primary.light 
+                        : 'action.hover',
                     },
-                  }}
+                  })}
                 >
                   <span style={{ fontSize: 32, lineHeight: 1 }}>
                     {type.icon}
@@ -147,21 +161,21 @@ export default function TopFilters({
         onChange={(e) => handleFilterChange({ search: e.target.value })}
         size='small'
         placeholder='Search location or keyword'
-        sx={{
+        sx={(theme) => ({
           minWidth: 300,
           borderRadius: 3,
-          bgcolor: 'white',
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+          bgcolor: 'background.paper',
+          boxShadow: theme.shadows[2],
           '& .MuiOutlinedInput-root': {
             borderRadius: 3,
             '&:hover': {
-              boxShadow: '0 6px 25px rgba(0, 0, 0, 0.12)',
+              boxShadow: theme.shadows[4],
             },
             '&.Mui-focused': {
-              boxShadow: '0 6px 25px rgba(25, 118, 210, 0.2)',
+              boxShadow: theme.shadows[6],
             }
           },
-        }}
+        })}
         InputProps={{
           startAdornment: (
             <InputAdornment position='start'>
@@ -175,17 +189,17 @@ export default function TopFilters({
       {isSmall && (
         <IconButton 
           onClick={onOpenDrawer} 
-          sx={{ 
+          sx={(theme) => ({ 
             ml: 'auto',
             bgcolor: 'primary.main',
-            color: 'white',
+            color: 'primary.contrastText',
             '&:hover': {
               bgcolor: 'primary.dark',
               transform: 'scale(1.05)',
             },
             transition: 'all 0.3s ease',
-            boxShadow: '0 4px 15px rgba(25, 118, 210, 0.3)',
-          }}
+            boxShadow: theme.shadows[4],
+          })}
         >
           <FilterListIcon />
         </IconButton>

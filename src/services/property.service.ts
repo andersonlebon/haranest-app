@@ -1,17 +1,49 @@
-import { PaginatedResponse, PaginationParams } from "@/components/shared/types";
+import { PaginatedResponse, PaginationParams } from "@/types/api";
 import { PropertyResponseDto, CreatePropertyDto, UpdatePropertyDto } from "@/db/dtos/properties.dto";
 import axiosClient from "@/lib/axiosClient";
 
+export interface PropertyFiltersParams extends PaginationParams {
+  price?: number[]; // [min, max]
+  propertyType?: string;
+  bedrooms?: number;
+  bathrooms?: number;
+  amenities?: string[];
+  features?: string[];
+  search?: string;
+}
 
 class PropertyService {
   private baseUrl = "/properties";
 
-  // ✅ Get all properties with pagination
+  // ✅ Get all properties with pagination and filters
   async getAll(
-    params: PaginationParams
+    params: PropertyFiltersParams
   ): Promise<PaginatedResponse<PropertyResponseDto>> {
+    // Build query params with proper array handling
+    const queryParams: Record<string, string | number> = {};
+    
+    if (params.page) queryParams.page = params.page;
+    if (params.perPage) queryParams.perPage = params.perPage;
+    if (params.search) queryParams.search = params.search;
+    if (params.propertyType) queryParams.propertyType = params.propertyType;
+    if (params.bedrooms) queryParams.bedrooms = params.bedrooms;
+    if (params.bathrooms) queryParams.bathrooms = params.bathrooms;
+
+    // Build params with array handling
+    const requestParams: Record<string, string | number | string[] | number[]> = { ...queryParams };
+    
+    if (params.price?.length) {
+      requestParams.price = params.price;
+    }
+    if (params.amenities?.length) {
+      requestParams.amenities = params.amenities;
+    }
+    if (params.features?.length) {
+      requestParams.features = params.features;
+    }
+
     const response = await axiosClient.get<PaginatedResponse<PropertyResponseDto>>(this.baseUrl, {
-      params: params,
+      params: requestParams,
     });
     return response.data;
   }
@@ -33,13 +65,13 @@ class PropertyService {
     return response.data;
   }
 
-  // ✅ Update property
+  // ✅ Update property (using PATCH to match API)
   async update(
     id: number,
     payload: UpdatePropertyDto
   ): Promise<PropertyResponseDto> {
-    const response = await axiosClient.put<PropertyResponseDto>(
-      `${this.baseUrl}/${id}`,
+    const response = await axiosClient.patch<PropertyResponseDto>(
+      `${this.baseUrl}?id=${id}`,
       payload
     );
     return response.data;
@@ -47,7 +79,7 @@ class PropertyService {
 
   // ✅ Delete property
   async delete(id: number): Promise<void> {
-    await axiosClient.delete(`${this.baseUrl}/${id}`);
+    await axiosClient.delete(`${this.baseUrl}?id=${id}`);
   }
 }
 

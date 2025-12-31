@@ -1,6 +1,6 @@
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { properties, propertyTypeEnum } from "../schema/properties";
-import { PaginationParams } from "@/components/shared/types";
+import { PaginationParams } from "@/types/api";
 
 // For reading data (GET)
 export type PropertyResponseDto = InferSelectModel<typeof properties>;

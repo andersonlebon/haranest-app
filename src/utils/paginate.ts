@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { PaginatedResponse, PaginationParams } from '@/components/shared/types';
+import { PaginatedResponse, PaginationParams } from '@/types/api';
 import { SQLWrapper, asc, desc, sql } from 'drizzle-orm';
 import { PgColumn, PgTableWithColumns } from 'drizzle-orm/pg-core';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';

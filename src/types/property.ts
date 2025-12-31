@@ -1,3 +1,7 @@
+/**
+ * Property interface for component usage
+ * Note: For API responses, use PropertyResponseDto from @/db/dtos/properties.dto
+ */
 export interface Property {
   id: number;
   title: string;
@@ -28,18 +32,3 @@ export interface Property {
   features?: string[];
 }
 
- 
-export interface PaginationParams {
-  page?: number;
-  perPage?: number;
-  search?: string;
-}
-
-export interface PaginatedResponse<T> {
-  data: T[];
-  totalItems: number;
-  totalPages: number;
-  currentPage: number;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-}

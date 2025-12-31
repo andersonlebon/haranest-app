@@ -198,16 +198,16 @@ export default function SidebarFilters({
           variant="contained" 
           onClick={onApplyFilters} 
           color="primary"
-          sx={{ 
+          sx={(theme) => ({ 
             borderRadius: 2,
             textTransform: 'none',
             fontWeight: 600,
             px: 3,
-            boxShadow: '0 4px 15px rgba(0, 123, 255, 0.3)',
+            boxShadow: theme.shadows[4],
             '&:hover': {
-              boxShadow: '0 6px 20px rgba(0, 123, 255, 0.4)',
+              boxShadow: theme.shadows[8],
             }
-          }}
+          })}
         >
           Show results
         </Button>

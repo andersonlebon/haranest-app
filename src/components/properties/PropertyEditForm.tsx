@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Property } from "@/components/shared/types";
+import { Property } from "@/types";
 import { propertyTypes, propertyFeatures, statuses } from "@/utils/constants";
 import ImageUploader from "./ImageUploader";
 

@@ -2,7 +2,7 @@ import { properties } from "@/db/schema/properties";
 import { and, eq, gte, ilike, lte, sql } from "drizzle-orm";
 import { db } from "@/config/drizzle.config";
 import { paginateQuery } from "@/utils/paginate";
-import { PaginationParams } from "@/components/shared/types";
+import { PaginationParams } from "@/types/api";
 import { PropertyFormValues } from "../validations/properties.validation";
 import { PropertyParams } from "../dtos/properties.dto";
 

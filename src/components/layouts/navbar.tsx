@@ -144,12 +144,12 @@ export default function AppAppBar() {
                   <Avatar
                     alt={profile?.fullName || 'User'}
                     src={profile?.avatarUrl || ''}
-                    sx={{
+                    sx={(theme) => ({
                       width: 40,
                       height: 40,
-                      border: '2px solid rgba(255,255,255,0.4)',
+                      border: `2px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.1)'}`,
                       boxShadow: 1,
-                    }}
+                    })}
                   />
                 </IconButton>
                  {/* Theme Switcher */}
@@ -179,11 +179,11 @@ export default function AppAppBar() {
                       <Avatar
                         alt={profile?.fullName || 'User'}
                         src={profile?.avatarUrl || ''}
-                        sx={{
+                        sx={(theme) => ({
                           width: 48,
                           height: 48,
-                          border: '2px solid rgba(255,255,255,0.3)',
-                        }}
+                          border: `2px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.1)'}`,
+                        })}
                       />
                       <Box sx={{ flex: 1, minWidth: 0 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>

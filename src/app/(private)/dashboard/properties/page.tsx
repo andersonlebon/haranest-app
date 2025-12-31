@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { PropertyList } from "@/components/properties/PropertyList";
-import { Property } from "@/components/shared/types";
+import { Property } from "@/types";
 
 export default function PropertiesPage() {
   const router = useRouter();

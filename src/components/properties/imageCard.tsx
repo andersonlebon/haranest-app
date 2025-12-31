@@ -23,8 +23,8 @@ function NextArrow(props: { onClick?: () => void }) {
         right: 8,
         zIndex: 1,
         transform: 'translateY(-50%)',
-        backgroundColor: 'white',
-        '&:hover': { backgroundColor: '#f5f5f5' },
+        bgcolor: 'background.paper',
+        '&:hover': { bgcolor: 'action.hover' },
       }}
     >
       <ArrowForwardIos fontSize="small" />
@@ -43,8 +43,8 @@ function PrevArrow(props: { onClick?: () => void }) {
         left: 8,
         zIndex: 1,
         transform: 'translateY(-50%)',
-        backgroundColor: 'white',
-        '&:hover': { backgroundColor: '#f5f5f5' },
+        bgcolor: 'background.paper',
+        '&:hover': { bgcolor: 'action.hover' },
       }}
     >
       <ArrowBackIos fontSize="small" />
@@ -125,7 +125,7 @@ export default function ImageSlide({ property, page='card' }: ImageSlideProps) {
                 position: 'absolute',
                 top: 8,
                 left: 8,
-                backgroundColor: 'white',
+                bgcolor: 'background.paper',
                 fontSize: 12,
                 fontWeight: 500,
               }}
@@ -139,7 +139,7 @@ export default function ImageSlide({ property, page='card' }: ImageSlideProps) {
                 position: 'absolute',
                 top: 8,
                 right: '50%',
-                backgroundColor: 'white',
+                bgcolor: 'background.paper',
                 fontSize: 12,
                 fontWeight: 500,
               }}
@@ -150,7 +150,7 @@ export default function ImageSlide({ property, page='card' }: ImageSlideProps) {
               position: 'absolute',
               top: 8,
               right: 8,
-              backgroundColor: 'white',
+              bgcolor: 'background.paper',
             }}
           >
             <FavoriteBorderIcon fontSize="small" />
