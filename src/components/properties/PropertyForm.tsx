@@ -133,7 +133,7 @@ export function PropertyForm({
     trigger,
     formState: { errors },
   } = useForm<PropertyFormValues>({
-    resolver: zodResolver(propertySchema),
+    resolver: zodResolver(propertySchema) as any,
     mode: "onChange",
     defaultValues: {
       profileId: profile?.id || 0,
@@ -318,7 +318,7 @@ export function PropertyForm({
         return (
           <Box sx={{ mt: 2 }}>
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Controller
                   name="title"
                   control={control}
@@ -336,7 +336,7 @@ export function PropertyForm({
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Controller
                   name="description"
                   control={control}
@@ -355,7 +355,7 @@ export function PropertyForm({
                 />
               </Grid>
 
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Controller
                   name="propertyType"
                   control={control}
@@ -379,7 +379,7 @@ export function PropertyForm({
                 />
               </Grid>
 
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Controller
                   name="rentOrSell"
                   control={control}
@@ -392,7 +392,7 @@ export function PropertyForm({
                 />
               </Grid>
 
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Controller
                   name="status"
                   control={control}
@@ -415,7 +415,7 @@ export function PropertyForm({
         return (
           <Box sx={{ mt: 2 }}>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Controller
                   name="price"
                   control={control}
@@ -437,7 +437,7 @@ export function PropertyForm({
                 />
               </Grid>
 
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Controller
                   name="currency"
                   control={control}
@@ -453,7 +453,7 @@ export function PropertyForm({
                 />
               </Grid>
 
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Controller
                   name="commission"
                   control={control}
@@ -474,7 +474,7 @@ export function PropertyForm({
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="priceLabel"
                   control={control}
@@ -490,7 +490,7 @@ export function PropertyForm({
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="beforePriceLabel"
                   control={control}
@@ -507,7 +507,7 @@ export function PropertyForm({
               </Grid>
 
               {rentOrSell === "rent" && (
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <Controller
                     name="availableFrom"
                     control={control}
@@ -534,7 +534,7 @@ export function PropertyForm({
           <Box sx={{ mt: 2 }}>
             <Grid container spacing={3}>
               {characteristics.map(({ name, label, icon }) => (
-                <Grid item xs={12} sm={6} md={4} key={name}>
+                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={name}>
                   <Controller
                     name={name as keyof PropertyFormValues}
                     control={control}
@@ -554,14 +554,14 @@ export function PropertyForm({
                 </Grid>
               ))}
 
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Divider sx={{ my: 2 }} />
                 <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 2, color: "text.primary" }}>
                   Additional Options
                 </Typography>
               </Grid>
 
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Controller
                   name="garage"
                   control={control}
@@ -574,7 +574,7 @@ export function PropertyForm({
                 />
               </Grid>
 
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Controller
                   name="basement"
                   control={control}
@@ -588,7 +588,7 @@ export function PropertyForm({
               </Grid>
 
               {watch("garage") && (
-                <Grid item xs={12} md={4}>
+                <Grid size={{ xs: 12, md: 4 }}>
                   <Controller
                     name="garageSize"
                     control={control}
@@ -617,7 +617,7 @@ export function PropertyForm({
               Optional: Provide construction and structure details for your property.
             </Typography>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Controller
                   name="structureType"
                   control={control}
@@ -642,7 +642,7 @@ export function PropertyForm({
                 />
               </Grid>
 
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Controller
                   name="roofing"
                   control={control}
@@ -667,7 +667,7 @@ export function PropertyForm({
                 />
               </Grid>
 
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Controller
                   name="exteriorMaterial"
                   control={control}
@@ -702,7 +702,7 @@ export function PropertyForm({
               Provide the location details for your property. More details help buyers find your property easily.
             </Typography>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="locationProvince"
                   control={control}
@@ -718,7 +718,7 @@ export function PropertyForm({
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="locationDistrict"
                   control={control}
@@ -734,7 +734,7 @@ export function PropertyForm({
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="locationCity"
                   control={control}
@@ -750,7 +750,7 @@ export function PropertyForm({
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="locationTown"
                   control={control}
@@ -766,7 +766,7 @@ export function PropertyForm({
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="locationCell"
                   control={control}
@@ -782,7 +782,7 @@ export function PropertyForm({
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="zip"
                   control={control}
@@ -798,7 +798,7 @@ export function PropertyForm({
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="latitude"
                   control={control}
@@ -817,7 +817,7 @@ export function PropertyForm({
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="longitude"
                   control={control}
@@ -852,7 +852,7 @@ export function PropertyForm({
                   .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
                   .join(" ");
                 return (
-                  <Grid item xs={6} sm={4} md={3} key={feature}>
+                  <Grid size={{ xs: 6, sm: 4, md: 3 }} key={feature}>
                     <Button
                       variant={features.includes(feature) ? "contained" : "outlined"}
                       onClick={() => handleToggleFeature(feature)}
@@ -1066,7 +1066,7 @@ export function PropertyForm({
                 </Typography>
                 <Grid container spacing={2}>
                   {images.map((img: string, idx: number) => (
-                    <Grid item xs={6} sm={4} md={3} key={idx}>
+                    <Grid size={{ xs: 6, sm: 4, md: 3 }} key={idx}>
                       <Box
                         sx={{
                           position: "relative",
@@ -1129,7 +1129,7 @@ export function PropertyForm({
 
             {/* Summary Cards */}
             <Grid container spacing={2} sx={{ mb: 4 }}>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Card variant="outlined" sx={{ height: "100%" }}>
                   <CardContent>
                     <Typography variant="subtitle2" color="text.secondary" gutterBottom>
@@ -1141,7 +1141,7 @@ export function PropertyForm({
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Card variant="outlined" sx={{ height: "100%" }}>
                   <CardContent>
                     <Typography variant="subtitle2" color="text.secondary" gutterBottom>
@@ -1155,7 +1155,7 @@ export function PropertyForm({
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Card variant="outlined" sx={{ height: "100%" }}>
                   <CardContent>
                     <Typography variant="subtitle2" color="text.secondary" gutterBottom>
@@ -1167,7 +1167,7 @@ export function PropertyForm({
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Card variant="outlined" sx={{ height: "100%" }}>
                   <CardContent>
                     <Typography variant="subtitle2" color="text.secondary" gutterBottom>
@@ -1179,7 +1179,7 @@ export function PropertyForm({
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <Card variant="outlined" sx={{ height: "100%" }}>
                   <CardContent>
                     <Typography variant="subtitle2" color="text.secondary" gutterBottom>
@@ -1199,7 +1199,7 @@ export function PropertyForm({
               Publishing Options
             </Typography>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="isPublished"
                   control={control}
@@ -1221,7 +1221,7 @@ export function PropertyForm({
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="isFeatured"
                   control={control}
