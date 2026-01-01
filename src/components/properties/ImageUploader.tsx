@@ -1,5 +1,7 @@
 "use client";
 import React, { useRef, useState } from "react";
+import { Box, Typography } from "@mui/material";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 interface ImageUploaderProps {
   onFiles: (files: File[]) => void;
@@ -34,15 +36,30 @@ export default function ImageUploader({ onFiles, maxFiles = 20, accept = "image/
   };
 
   return (
-    <div>
-      <div
+    <Box>
+      <Box
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onClick={() => inputRef.current?.click()}
-        className={`border-dashed border-2 rounded-md p-4 cursor-pointer transition-colors ${
-          isDragging ? "border-blue-400 bg-blue-50" : "border-gray-300 bg-white"
-        }`}
+        sx={{
+          border: "2px dashed",
+          borderColor: isDragging ? "primary.main" : "divider",
+          borderRadius: 2,
+          p: 4,
+          cursor: "pointer",
+          transition: "all 0.2s ease-in-out",
+          bgcolor: isDragging ? "action.hover" : "background.paper",
+          "&:hover": {
+            borderColor: "primary.main",
+            bgcolor: "action.hover",
+          },
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 2,
+        }}
       >
         <input
           ref={inputRef}
@@ -50,12 +67,34 @@ export default function ImageUploader({ onFiles, maxFiles = 20, accept = "image/
           multiple
           accept={accept}
           onChange={handleFilesSelected}
-          className="hidden"
+          style={{ display: "none" }}
         />
-        <div className="text-center text-sm text-gray-600">
-          Drag and drop images here, or click to select (jpg, png, etc.).
-        </div>
-      </div>
-    </div>
+        <CloudUploadIcon 
+          sx={{ 
+            fontSize: 48, 
+            color: isDragging ? "primary.main" : "text.secondary",
+            transition: "color 0.2s ease-in-out",
+          }} 
+        />
+        <Typography 
+          variant="body2" 
+          color="text.secondary"
+          textAlign="center"
+          sx={{
+            transition: "color 0.2s ease-in-out",
+            color: isDragging ? "primary.main" : "text.secondary",
+          }}
+        >
+          Drag and drop images here, or click to select
+        </Typography>
+        <Typography 
+          variant="caption" 
+          color="text.disabled"
+          textAlign="center"
+        >
+          Supports: JPG, PNG, GIF, WEBP (max {maxFiles} files)
+        </Typography>
+      </Box>
+    </Box>
   );
 }
