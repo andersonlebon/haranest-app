@@ -1,35 +1,47 @@
-import { supabase } from '@/utils/supabase/client';
-import { SUPABASE_STORAGE_BUCKET } from '@/config';
+import { API_URL } from '@/config';
 
 /**
- * Upload property images to Supabase Storage and return their public URLs
+ * Upload property images via API route to Supabase Storage and return their public URLs
+ * This uses a server-side API route to handle authentication and bypass RLS policies
  */
 export async function uploadPropertyImages(files: File[], folder?: string): Promise<string[]> {
   if (!files || files.length === 0) return [];
   
-  const urls: string[] = [];
-  const bucket = SUPABASE_STORAGE_BUCKET || 'properties';
-  
-  for (const file of files) {
-    const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
-    const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-    const dir = folder || 'properties';
-    const path = `${dir}/${filename}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from(bucket)
-      .upload(path, file, { upsert: false, cacheControl: '3600', contentType: file.type });
-
-    if (uploadError) {
-      throw new Error(`Upload error: ${uploadError.message}`);
+  try {
+    const formData = new FormData();
+    files.forEach((file) => {
+      formData.append('files', file);
+    });
+    if (folder) {
+      formData.append('folder', folder);
     }
 
-    const { data } = supabase.storage.from(bucket).getPublicUrl(path);
-    if (data?.publicUrl) {
-      urls.push(data.publicUrl);
+    const response = await fetch(`${API_URL}/api/upload`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      const errorMessage = errorData.details 
+        ? `${errorData.error}: ${Array.isArray(errorData.details) ? errorData.details.join(", ") : errorData.details}`
+        : errorData.error || `Upload failed with status ${response.status}`;
+      throw new Error(errorMessage);
     }
+
+    const data = await response.json();
+    
+    // If there are warnings (partial failures), log them but still return URLs
+    if (data.warnings) {
+      console.warn("Upload warnings:", data.warnings);
+    }
+    
+    return data.urls || [];
+  } catch (error) {
+    console.error('Error uploading images:', error);
+    throw error instanceof Error 
+      ? error 
+      : new Error('Failed to upload images');
   }
-  
-  return urls;
 }
 

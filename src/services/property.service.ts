@@ -13,7 +13,7 @@ export interface PropertyFiltersParams extends PaginationParams {
 }
 
 class PropertyService {
-  private baseUrl = "/properties";
+  private baseUrl = "properties";
 
   // ✅ Get all properties with pagination and filters
   async getAll(

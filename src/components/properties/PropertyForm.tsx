@@ -19,6 +19,8 @@ import {
   Grid,
   InputAdornment,
   Alert,
+  CircularProgress,
+  LinearProgress,
 } from "@mui/material";
 
 import CloseIcon from "@mui/icons-material/Close";
@@ -122,6 +124,9 @@ export function PropertyForm({
 
   const [newAmenity, setNewAmenity] = useState("");
   const [newImage, setNewImage] = useState("");
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
 
   const amenities = watch("amenities") ?? [];
   const features = (watch("features") ?? []) as PropertyFeature[];
@@ -1036,14 +1041,86 @@ export function PropertyForm({
           <ImageUploader
             onFiles={async (files: File[]) => {
               if (!files || files.length === 0) return;
+              
+              setUploadError(null);
+              setUploadSuccess(false);
+              setUploadLoading(true);
+              
               try {
                 const uploadedUrls = await uploadPropertyImages(files);
-                setValue("images", [...images, ...uploadedUrls]);
+                if (uploadedUrls.length > 0) {
+                  setValue("images", [...images, ...uploadedUrls]);
+                  
+                  // Check if all files were uploaded
+                  if (uploadedUrls.length < files.length) {
+                    setUploadError(
+                      `Only ${uploadedUrls.length} of ${files.length} images uploaded successfully. Some files may have failed.`
+                    );
+                  } else {
+                    setUploadSuccess(true);
+                    // Clear success message after 3 seconds
+                    setTimeout(() => setUploadSuccess(false), 3000);
+                  }
+                } else {
+                  setUploadError("No images were uploaded. Please check your connection and try again.");
+                }
               } catch (e: unknown) {
+                const errorMessage = e instanceof Error 
+                  ? e.message 
+                  : "Failed to upload images. Please check your connection and try again.";
+                setUploadError(errorMessage);
                 console.error("Error uploading images:", e);
+              } finally {
+                setUploadLoading(false);
               }
             }}
           />
+          
+          {uploadLoading && (
+            <Box sx={{ mt: 2 }}>
+              <Alert 
+                severity="info" 
+                sx={{ borderRadius: 2 }}
+                icon={<CircularProgress size={20} />}
+              >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                  <Typography variant="body2">
+                    Uploading images... Please wait.
+                  </Typography>
+                </Box>
+                <LinearProgress sx={{ mt: 1, borderRadius: 1 }} />
+              </Alert>
+            </Box>
+          )}
+          
+          {uploadError && (
+            <Box sx={{ mt: 2 }}>
+              <Alert 
+                severity="error" 
+                onClose={() => setUploadError(null)}
+                sx={{ borderRadius: 2 }}
+              >
+                <Typography variant="body2" fontWeight={500} gutterBottom>
+                  Upload Failed
+                </Typography>
+                <Typography variant="body2">
+                  {uploadError}
+                </Typography>
+              </Alert>
+            </Box>
+          )}
+          
+          {uploadSuccess && (
+            <Box sx={{ mt: 2 }}>
+              <Alert 
+                severity="success" 
+                onClose={() => setUploadSuccess(false)}
+                sx={{ borderRadius: 2 }}
+              >
+                Images uploaded successfully!
+              </Alert>
+            </Box>
+          )}
         </Box>
 
         <Box sx={{ mb: 2 }}>

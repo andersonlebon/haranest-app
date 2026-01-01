@@ -8,6 +8,8 @@
 // Supabase Configuration
 export const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL as string | undefined;
 export const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string | undefined;
+// Service role key - ONLY use on server-side, NEVER expose to client
+export const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY as string | undefined;
 export const SUPABASE_STORAGE_BUCKET = 
   (process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET as string | undefined) || 'properties';
 
