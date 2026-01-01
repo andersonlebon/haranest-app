@@ -2,6 +2,19 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import {
+  Box,
+  Container,
+  Paper,
+  Typography,
+  Button,
+  Grid,
+  CircularProgress,
+  Alert,
+  Snackbar,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { PropertyForm } from "@/components/properties/PropertyForm";
 import { PropertyEditForm } from "@/components/properties/PropertyEditForm";
 import { PropertyList } from "@/components/properties/PropertyList";
@@ -15,6 +28,11 @@ export default function PropertyActionsPage() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: "success" | "error" }>({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   // Valid actions
   const validActions = ["add", "edit", "list", "view"];
@@ -65,159 +83,361 @@ export default function PropertyActionsPage() {
     try {
       const created = await createProperty(formData);
       setProperties(prev => [created as unknown as Property, ...prev]);
+      setSnackbar({ open: true, message: "Property created successfully!", severity: "success" });
       router.push("/dashboard/properties/list");
     } catch (e: any) {
-      alert(e?.message || "Error while creating property");
+      setSnackbar({ open: true, message: e?.message || "Error while creating property", severity: "error" });
     }
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
   };
 
   const renderContent = () => {
     switch (action) {
       case "add":
         return (
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-2xl font-bold mb-6 text-gray-800">
+          <Container maxWidth="lg">
+            <Paper
+              elevation={0}
+              sx={{
+                p: { xs: 3, sm: 4, md: 6 },
+                borderRadius: 2,
+                border: "1px solid",
+                borderColor: "divider",
+                bgcolor: "background.paper",
+              }}
+            >
+              <Typography
+                variant="h4"
+                fontWeight={600}
+                sx={{ mb: 4, color: "text.primary" }}
+              >
                 Add New Property
-              </h2>
+              </Typography>
               <PropertyForm 
                 onSubmit={handlePropertyCreate}
                 onCancel={() => router.push("/dashboard/properties/list")}
+                loading={creating}
               />
-            </div>
-          </div>
+            </Paper>
+          </Container>
         );
 
       case "edit":
         return (
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-2xl font-bold mb-6 text-gray-800">
-                  Select a Property to Edit
-                </h2>
-                <PropertyList 
-                  properties={properties}
-                  loading={loading}
-                  onPropertySelect={handlePropertySelect}
-                  selectedProperty={selectedProperty}
-                />
-              </div>
+          <Container maxWidth="xl">
+            <Grid container spacing={3}>
+              <Grid size={{ xs: 12, lg: 6 }}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: { xs: 3, sm: 4 },
+                    borderRadius: 2,
+                    border: "1px solid",
+                    borderColor: "divider",
+                    bgcolor: "background.paper",
+                    height: "100%",
+                  }}
+                >
+                  <Typography
+                    variant="h5"
+                    fontWeight={600}
+                    sx={{ mb: 3, color: "text.primary" }}
+                  >
+                    Select a Property to Edit
+                  </Typography>
+                  {loading ? (
+                    <Box display="flex" justifyContent="center" alignItems="center" minHeight={200}>
+                      <CircularProgress />
+                    </Box>
+                  ) : (
+                    <PropertyList 
+                      properties={properties}
+                      loading={loading}
+                      onPropertySelect={handlePropertySelect}
+                      selectedProperty={selectedProperty}
+                    />
+                  )}
+                </Paper>
+              </Grid>
               
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-2xl font-bold mb-6 text-gray-800">
-                  Edit Property
-                </h2>
-                {selectedProperty ? (
-                  <PropertyEditForm 
-                    property={selectedProperty}
-                    onSuccess={handlePropertyUpdate}
-                    onCancel={() => setSelectedProperty(null)}
-                  />
-                ) : (
-                  <div className="text-center text-gray-500 py-8">
-                    <p>Select a property to edit</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+              <Grid size={{ xs: 12, lg: 6 }}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: { xs: 3, sm: 4 },
+                    borderRadius: 2,
+                    border: "1px solid",
+                    borderColor: "divider",
+                    bgcolor: "background.paper",
+                    height: "100%",
+                  }}
+                >
+                  <Typography
+                    variant="h5"
+                    fontWeight={600}
+                    sx={{ mb: 3, color: "text.primary" }}
+                  >
+                    Edit Property
+                  </Typography>
+                  {selectedProperty ? (
+                    <PropertyEditForm 
+                      property={selectedProperty}
+                      onSuccess={handlePropertyUpdate}
+                      onCancel={() => setSelectedProperty(null)}
+                    />
+                  ) : (
+                    <Box
+                      textAlign="center"
+                      py={8}
+                      sx={{
+                        color: "text.secondary",
+                      }}
+                    >
+                      <Typography variant="body1">
+                        Select a property to edit
+                      </Typography>
+                    </Box>
+                  )}
+                </Paper>
+              </Grid>
+            </Grid>
+          </Container>
         );
 
       case "list":
         return (
-          <div className="max-w-6xl mx-auto">
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">
+          <Container maxWidth="xl">
+            <Paper
+              elevation={0}
+              sx={{
+                p: { xs: 3, sm: 4 },
+                borderRadius: 2,
+                border: "1px solid",
+                borderColor: "divider",
+                bgcolor: "background.paper",
+              }}
+            >
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                mb={4}
+                flexWrap="wrap"
+                gap={2}
+              >
+                <Typography
+                  variant="h4"
+                  fontWeight={600}
+                  sx={{ color: "text.primary" }}
+                >
                   My Properties
-                </h2>
-                <button
+                </Typography>
+                <Button
+                  variant="contained"
+                  startIcon={<AddIcon />}
                   onClick={() => router.push("/dashboard/properties/add")}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                  sx={{
+                    borderRadius: 2,
+                    textTransform: "none",
+                    px: 3,
+                    transition: "all 0.2s ease-in-out",
+                    "&:hover": {
+                      transform: "translateY(-2px)",
+                      boxShadow: 4,
+                    },
+                  }}
                 >
                   Add Property
-                </button>
-              </div>
-              <PropertyList 
-                properties={properties}
-                loading={loading}
-                onPropertySelect={handlePropertySelect}
-                showActions={true}
-                onDelete={async (id: number) => {
-                  try {
-                    await deleteProperty(id);
-                    setProperties(prev => prev.filter(p => p.id !== id));
-                  } catch (e) {
-                    console.error(e);
-                    alert('Suppression échouée');
-                  }
-                }}
-              />
-            </div>
-          </div>
+                </Button>
+              </Box>
+              {loading ? (
+                <Box display="flex" justifyContent="center" alignItems="center" minHeight={300}>
+                  <CircularProgress />
+                </Box>
+              ) : (
+                <PropertyList 
+                  properties={properties}
+                  loading={loading}
+                  onPropertySelect={handlePropertySelect}
+                  showActions={true}
+                  onDelete={async (id: number) => {
+                    try {
+                      await deleteProperty(id);
+                      setProperties(prev => prev.filter(p => p.id !== id));
+                      setSnackbar({ open: true, message: "Property deleted successfully!", severity: "success" });
+                    } catch (e) {
+                      console.error(e);
+                      setSnackbar({ open: true, message: "Failed to delete property", severity: "error" });
+                    }
+                  }}
+                />
+              )}
+            </Paper>
+          </Container>
         );
 
       case "view":
         return (
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-2xl font-bold mb-6 text-gray-800">
-                Détails de la propriété
-              </h2>
+          <Container maxWidth="lg">
+            <Paper
+              elevation={0}
+              sx={{
+                p: { xs: 3, sm: 4, md: 6 },
+                borderRadius: 2,
+                border: "1px solid",
+                borderColor: "divider",
+                bgcolor: "background.paper",
+              }}
+            >
+              <Typography
+                variant="h4"
+                fontWeight={600}
+                sx={{ mb: 4, color: "text.primary" }}
+              >
+                Property Details
+              </Typography>
               {selectedProperty ? (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">Title</label>
-                      <p className="text-lg">{selectedProperty.title}</p>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">Price</label>
-                      <p className="text-lg font-semibold text-green-600">
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                  <Grid container spacing={3}>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Typography
+                        variant="caption"
+                        fontWeight={600}
+                        sx={{ color: "text.secondary", mb: 1, display: "block" }}
+                      >
+                        Title
+                      </Typography>
+                      <Typography variant="h6" sx={{ color: "text.primary" }}>
+                        {selectedProperty.title}
+                      </Typography>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Typography
+                        variant="caption"
+                        fontWeight={600}
+                        sx={{ color: "text.secondary", mb: 1, display: "block" }}
+                      >
+                        Price
+                      </Typography>
+                      <Typography
+                        variant="h6"
+                        fontWeight={600}
+                        sx={{ color: "success.main" }}
+                      >
                         {selectedProperty.price} {selectedProperty.currency}
-                      </p>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Description</label>
-                    <p className="text-gray-600">{selectedProperty.description}</p>
-                  </div>
-                </div>
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                  <Box>
+                    <Typography
+                      variant="caption"
+                      fontWeight={600}
+                      sx={{ color: "text.secondary", mb: 1, display: "block" }}
+                    >
+                      Description
+                    </Typography>
+                    <Typography variant="body1" sx={{ color: "text.secondary" }}>
+                      {selectedProperty.description || "No description provided"}
+                    </Typography>
+                  </Box>
+                </Box>
               ) : (
-                <div className="text-center text-gray-500 py-8">
-                  <p>No property selected</p>
-                </div>
+                <Box
+                  textAlign="center"
+                  py={8}
+                  sx={{
+                    color: "text.secondary",
+                  }}
+                >
+                  <Typography variant="body1">
+                    No property selected
+                  </Typography>
+                </Box>
               )}
-            </div>
-          </div>
+            </Paper>
+          </Container>
         );
 
       default:
         return (
-          <div className="text-center py-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
-              Action non reconnue
-            </h2>
-            <p className="text-gray-600 mb-4">
-              L'action "{action}" n'est pas reconnue.
-            </p>
-            <button
-              onClick={() => router.push("/dashboard/properties/list")}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          <Container maxWidth="md">
+            <Paper
+              elevation={0}
+              sx={{
+                p: 4,
+                borderRadius: 2,
+                border: "1px solid",
+                borderColor: "divider",
+                bgcolor: "background.paper",
+                textAlign: "center",
+              }}
             >
-              Retour à la liste
-            </button>
-          </div>
+              <Typography
+                variant="h5"
+                fontWeight={600}
+                sx={{ mb: 2, color: "text.primary" }}
+              >
+                Unknown Action
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{ mb: 4, color: "text.secondary" }}
+              >
+                The action "{action}" is not recognized.
+              </Typography>
+              <Button
+                variant="contained"
+                startIcon={<ArrowBackIcon />}
+                onClick={() => router.push("/dashboard/properties/list")}
+                sx={{
+                  borderRadius: 2,
+                  textTransform: "none",
+                  px: 3,
+                  transition: "all 0.2s ease-in-out",
+                  "&:hover": {
+                    transform: "translateY(-2px)",
+                    boxShadow: 4,
+                  },
+                }}
+              >
+                Back to List
+              </Button>
+            </Paper>
+          </Container>
         );
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4">
+    <Box
+      sx={{
+        minHeight: "100vh",
+        py: { xs: 3, sm: 4, md: 6 },
+        bgcolor: "background.default",
+      }}
+    >
+      <Container maxWidth={false}>
         {renderContent()}
-      </div>
-    </div>
+      </Container>
+      
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </Box>
   );
 }
