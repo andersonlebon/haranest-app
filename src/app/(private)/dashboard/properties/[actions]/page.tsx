@@ -16,10 +16,10 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { PropertyForm } from "@/components/properties/PropertyForm";
-import { PropertyEditForm } from "@/components/properties/PropertyEditForm";
 import { PropertyList } from "@/components/properties/PropertyList";
 import { Property } from "@/types";
-import { useCreateProperty, useDeleteProperty } from "@/hooks/useProperties";
+import { useCreateProperty, useDeleteProperty, useUpdateProperty } from "@/hooks/useProperties";
+import { PropertyFormValues } from "@/db/validations/properties.validation";
 
 export default function PropertyActionsPage() {
   const params = useParams();
@@ -77,16 +77,32 @@ export default function PropertyActionsPage() {
   };
 
   const { mutateAsync: createProperty, isPending: creating } = useCreateProperty();
+  const { mutateAsync: updateProperty, isPending: updating } = useUpdateProperty();
   const { mutateAsync: deleteProperty } = useDeleteProperty();
 
-  const handlePropertyCreate = async (formData: any) => {
+  const handlePropertySubmit = async (formData: PropertyFormValues) => {
     try {
-      const created = await createProperty(formData);
-      setProperties(prev => [created as unknown as Property, ...prev]);
-      setSnackbar({ open: true, message: "Property created successfully!", severity: "success" });
-      router.push("/dashboard/properties/list");
+      if (selectedProperty && action === "edit") {
+        // Edit mode
+        const updated = await updateProperty({ id: selectedProperty.id, data: formData as any });
+        setProperties(prev => 
+          prev.map(p => p.id === updated.id ? { ...(updated as unknown as Property), createdAt: p.createdAt, updatedAt: new Date().toISOString() } : p)
+        );
+        setSelectedProperty(null);
+        setSnackbar({ open: true, message: "Property updated successfully!", severity: "success" });
+      } else {
+        // Create mode
+        const created = await createProperty(formData as any);
+        setProperties(prev => [created as unknown as Property, ...prev]);
+        setSnackbar({ open: true, message: "Property created successfully!", severity: "success" });
+        router.push("/dashboard/properties/list");
+      }
     } catch (e: any) {
-      setSnackbar({ open: true, message: e?.message || "Error while creating property", severity: "error" });
+      setSnackbar({ 
+        open: true, 
+        message: e?.message || (action === "edit" ? "Error while updating property" : "Error while creating property"), 
+        severity: "error" 
+      });
     }
   };
 
@@ -117,7 +133,7 @@ export default function PropertyActionsPage() {
                 Add New Property
               </Typography>
               <PropertyForm 
-                onSubmit={handlePropertyCreate}
+                onSubmit={handlePropertySubmit}
                 onCancel={() => router.push("/dashboard/properties/list")}
                 loading={creating}
               />
@@ -182,13 +198,14 @@ export default function PropertyActionsPage() {
                   >
                     Edit Property
                   </Typography>
-                  {selectedProperty ? (
-                    <PropertyEditForm 
-                      property={selectedProperty}
-                      onSuccess={handlePropertyUpdate}
-                      onCancel={() => setSelectedProperty(null)}
-                    />
-                  ) : (
+                {selectedProperty ? (
+                  <PropertyForm 
+                    property={selectedProperty}
+                    onSubmit={handlePropertySubmit}
+                    onCancel={() => setSelectedProperty(null)}
+                    loading={updating}
+                  />
+                ) : (
                     <Box
                       textAlign="center"
                       py={8}
