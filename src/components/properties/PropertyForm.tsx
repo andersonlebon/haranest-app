@@ -591,20 +591,40 @@ export function PropertyForm({
                   {step.description}
                 </Typography>
               </StepLabel>
-              <StepContent>
+              {/* Show preview for completed steps outside StepContent */}
+              {index < activeStep && (
                 <Box
                   sx={{
+                    ml: 5,
+                    mt: 2,
+                    mb: 2,
                     p: 3,
                     borderRadius: 2,
                     bgcolor: "background.default",
                     border: "1px solid",
                     borderColor: "divider",
-                    minHeight: 200,
                   }}
                 >
                   {getStepContent(index)}
                 </Box>
-              </StepContent>
+              )}
+              {/* Show form content for active step in StepContent */}
+              {index === activeStep && (
+                <StepContent>
+                  <Box
+                    sx={{
+                      p: 3,
+                      borderRadius: 2,
+                      bgcolor: "background.default",
+                      border: "1px solid",
+                      borderColor: "divider",
+                      minHeight: 200,
+                    }}
+                  >
+                    {getStepContent(index)}
+                  </Box>
+                </StepContent>
+              )}
             </Step>
           ))}
         </Stepper>
