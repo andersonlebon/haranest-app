@@ -386,9 +386,6 @@ export function PropertyForm({
 
     // If this is the current active step, show the form content
     if (stepIndex === activeStep) {
-      // Show previews of all completed steps (all steps before current step)
-      const completedSteps = Array.from({ length: activeStep }, (_, i) => i);
-
       const stepContent = (() => {
         switch (stepIndex) {
           case 0:
@@ -454,28 +451,7 @@ export function PropertyForm({
         }
       })();
 
-      return (
-        <Box>
-          {/* Show previews of all completed steps */}
-          {completedSteps.length > 0 && (
-            <Box sx={{ mb: 3 }}>
-              {completedSteps.map((completedStep) => (
-                <StepPreview
-                  key={completedStep}
-                  step={completedStep}
-                  watch={watch}
-                  images={images}
-                  features={features}
-                  amenities={amenities}
-                  onEdit={() => handleEditStep(completedStep)}
-                  showEditButton={true}
-                />
-              ))}
-            </Box>
-          )}
-          {stepContent}
-        </Box>
-      );
+      return stepContent;
     }
 
     // If step is not reached yet, show nothing or a placeholder
