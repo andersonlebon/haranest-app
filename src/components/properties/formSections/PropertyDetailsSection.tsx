@@ -1,5 +1,6 @@
 import React from "react";
-import { Box, Grid, TextField, Typography, Divider, Switch, FormControlLabel } from "@mui/material";
+import { Box, Grid, TextField, Typography, Divider, Switch, FormControlLabel, Button } from "@mui/material";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Controller, Control, FieldErrors, UseFormWatch } from "react-hook-form";
 import { PropertyFormValues } from "@/db/validations/properties.validation";
 
@@ -7,6 +8,8 @@ interface PropertyDetailsSectionProps {
   control: Control<PropertyFormValues>;
   errors: FieldErrors<PropertyFormValues>;
   watch: UseFormWatch<PropertyFormValues>;
+  onNext?: () => void;
+  isLastStep?: boolean;
 }
 
 const characteristics = [
@@ -19,7 +22,7 @@ const characteristics = [
   { name: "floors", label: "Floors", icon: "🏢" },
 ];
 
-export function PropertyDetailsSection({ control, errors, watch }: PropertyDetailsSectionProps) {
+export function PropertyDetailsSection({ control, errors, watch, onNext, isLastStep }: PropertyDetailsSectionProps) {
   const hasGarage = watch("garage");
 
   return (
@@ -99,7 +102,25 @@ export function PropertyDetailsSection({ control, errors, watch }: PropertyDetai
           </Grid>
         )}
       </Grid>
+      {onNext && !isLastStep && (
+        <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            variant="contained"
+            onClick={onNext}
+            endIcon={<ArrowForwardIcon />}
+            sx={{
+              minWidth: 120,
+              transition: "all 0.2s ease-in-out",
+              "&:hover": {
+                transform: "translateX(2px)",
+                boxShadow: 4,
+              },
+            }}
+          >
+            Next
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 }
-

@@ -1,5 +1,6 @@
 import React from "react";
-import { Box, Grid, TextField, MenuItem } from "@mui/material";
+import { Box, Grid, TextField, MenuItem, Button } from "@mui/material";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Controller, Control, FieldErrors } from "react-hook-form";
 import { PropertyFormValues } from "@/db/validations/properties.validation";
 import { propertyTypes, statuses } from "@/utils/constants";
@@ -7,9 +8,11 @@ import { propertyTypes, statuses } from "@/utils/constants";
 interface BasicInfoSectionProps {
   control: Control<PropertyFormValues>;
   errors: FieldErrors<PropertyFormValues>;
+  onNext?: () => void;
+  isLastStep?: boolean;
 }
 
-export function BasicInfoSection({ control, errors }: BasicInfoSectionProps) {
+export function BasicInfoSection({ control, errors, onNext, isLastStep }: BasicInfoSectionProps) {
   return (
     <Box sx={{ mt: 2 }}>
       <Grid container spacing={3}>
@@ -103,6 +106,25 @@ export function BasicInfoSection({ control, errors }: BasicInfoSectionProps) {
           />
         </Grid>
       </Grid>
+      {onNext && !isLastStep && (
+        <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            variant="contained"
+            onClick={onNext}
+            endIcon={<ArrowForwardIcon />}
+            sx={{
+              minWidth: 120,
+              transition: "all 0.2s ease-in-out",
+              "&:hover": {
+                transform: "translateX(2px)",
+                boxShadow: 4,
+              },
+            }}
+          >
+            Next
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 }

@@ -1,5 +1,6 @@
 import React from "react";
-import { Box, Grid, TextField, MenuItem, InputAdornment } from "@mui/material";
+import { Box, Grid, TextField, MenuItem, InputAdornment, Button } from "@mui/material";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Controller, Control, FieldErrors, UseFormWatch } from "react-hook-form";
 import { PropertyFormValues } from "@/db/validations/properties.validation";
 import { currencies } from "@/utils/constants";
@@ -8,9 +9,11 @@ interface PricingFinancialSectionProps {
   control: Control<PropertyFormValues>;
   errors: FieldErrors<PropertyFormValues>;
   watch: UseFormWatch<PropertyFormValues>;
+  onNext?: () => void;
+  isLastStep?: boolean;
 }
 
-export function PricingFinancialSection({ control, errors, watch }: PricingFinancialSectionProps) {
+export function PricingFinancialSection({ control, errors, watch, onNext, isLastStep }: PricingFinancialSectionProps) {
   const rentOrSell = watch("rentOrSell");
 
   return (
@@ -127,6 +130,25 @@ export function PricingFinancialSection({ control, errors, watch }: PricingFinan
           </Grid>
         )}
       </Grid>
+      {onNext && !isLastStep && (
+        <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            variant="contained"
+            onClick={onNext}
+            endIcon={<ArrowForwardIcon />}
+            sx={{
+              minWidth: 120,
+              transition: "all 0.2s ease-in-out",
+              "&:hover": {
+                transform: "translateX(2px)",
+                boxShadow: 4,
+              },
+            }}
+          >
+            Next
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 }

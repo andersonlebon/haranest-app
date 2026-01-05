@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Grid, TextField, Button, IconButton, Typography, Alert, CircularProgress, LinearProgress } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ImageUploader from "../ImageUploader";
 import { Controller, Control, FieldErrors } from "react-hook-form";
 import { PropertyFormValues } from "@/db/validations/properties.validation";
@@ -23,6 +24,8 @@ interface MediaSectionProps {
   onSetUploadLoading: (loading: boolean) => void;
   onSetUploadSuccess: (success: boolean) => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>, callback: () => void) => void;
+  onNext?: () => void;
+  isLastStep?: boolean;
 }
 
 export function MediaSection({
@@ -41,6 +44,8 @@ export function MediaSection({
   onSetUploadLoading,
   onSetUploadSuccess,
   onKeyDown,
+  onNext,
+  isLastStep,
 }: MediaSectionProps) {
   const handleFileUpload = async (files: File[]) => {
     if (!files || files.length === 0) return;
@@ -231,6 +236,25 @@ export function MediaSection({
               </Grid>
             ))}
           </Grid>
+        </Box>
+      )}
+      {onNext && !isLastStep && (
+        <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            variant="contained"
+            onClick={onNext}
+            endIcon={<ArrowForwardIcon />}
+            sx={{
+              minWidth: 120,
+              transition: "all 0.2s ease-in-out",
+              "&:hover": {
+                transform: "translateX(2px)",
+                boxShadow: 4,
+              },
+            }}
+          >
+            Next
+          </Button>
         </Box>
       )}
     </Box>

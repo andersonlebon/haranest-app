@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Grid, Button, Chip, Typography, Divider, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { propertyFeatures } from "@/utils/constants";
 
 type PropertyFeature = (typeof propertyFeatures)[number];
@@ -14,6 +15,8 @@ interface FeaturesAmenitiesSectionProps {
   onRemoveAmenity: (amenity: string) => void;
   onToggleFeature: (feature: PropertyFeature) => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>, callback: () => void) => void;
+  onNext?: () => void;
+  isLastStep?: boolean;
 }
 
 export function FeaturesAmenitiesSection({
@@ -25,6 +28,8 @@ export function FeaturesAmenitiesSection({
   onRemoveAmenity,
   onToggleFeature,
   onKeyDown,
+  onNext,
+  isLastStep,
 }: FeaturesAmenitiesSectionProps) {
   return (
     <Box sx={{ mt: 2 }}>
@@ -111,6 +116,25 @@ export function FeaturesAmenitiesSection({
           </Typography>
         )}
       </Box>
+      {onNext && !isLastStep && (
+        <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            variant="contained"
+            onClick={onNext}
+            endIcon={<ArrowForwardIcon />}
+            sx={{
+              minWidth: 120,
+              transition: "all 0.2s ease-in-out",
+              "&:hover": {
+                transform: "translateX(2px)",
+                boxShadow: 4,
+              },
+            }}
+          >
+            Next
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 }

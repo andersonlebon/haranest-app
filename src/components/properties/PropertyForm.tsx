@@ -37,6 +37,7 @@ import { LocationSection } from "./formSections/LocationSection";
 import { FeaturesAmenitiesSection } from "./formSections/FeaturesAmenitiesSection";
 import { MediaSection } from "./formSections/MediaSection";
 import { ReviewPublishSection } from "./formSections/ReviewPublishSection";
+import { StepPreview } from "./formSections/StepPreview";
 
 type PropertyFeature = (typeof propertyFeatures)[number];
 
@@ -330,6 +331,11 @@ export function PropertyForm({
   );
 
   const onSubmitForm = (data: PropertyFormValues) => {
+    // Ensure user has reached the review step before allowing submission
+    if (activeStep !== steps.length - 1) {
+      return;
+    }
+    
     if (!profile?.id) {
       return;
     }
@@ -358,56 +364,128 @@ export function PropertyForm({
     );
   }
 
-  const getStepContent = (step: number) => {
-    switch (step) {
-      case 0:
-        return <BasicInfoSection control={control} errors={errors} />;
-      case 1:
-        return <PricingFinancialSection control={control} errors={errors} watch={watch} />;
-      case 2:
-        return <PropertyDetailsSection control={control} errors={errors} watch={watch} />;
-      case 3:
-        return <ConstructionSection control={control} />;
-      case 4:
-        return <LocationSection control={control} errors={errors} />;
-      case 5:
-        return (
-          <FeaturesAmenitiesSection
-            features={features}
-            amenities={amenities}
-            newAmenity={newAmenity}
-            onNewAmenityChange={setNewAmenity}
-            onAddAmenity={handleAddAmenity}
-            onRemoveAmenity={handleRemoveAmenity}
-            onToggleFeature={handleToggleFeature}
-            onKeyDown={handleKeyDown}
-          />
-        );
-      case 6:
-        return (
-          <MediaSection
-            control={control}
-            errors={errors}
-            images={images}
-            newImage={newImage}
-            onNewImageChange={setNewImage}
-            onAddImage={handleAddImage}
-            onRemoveImage={handleRemoveImage}
-            onSetImages={(newImages) => setValue("images", newImages)}
-            uploadError={uploadError}
-            uploadLoading={uploadLoading}
-            uploadSuccess={uploadSuccess}
-            onSetUploadError={setUploadError}
-            onSetUploadLoading={setUploadLoading}
-            onSetUploadSuccess={setUploadSuccess}
-            onKeyDown={handleKeyDown}
-          />
-        );
-      case 7:
-        return <ReviewPublishSection control={control} watch={watch} images={images} />;
-      default:
-        return null;
+  const handleEditStep = (stepIndex: number) => {
+    setActiveStep(stepIndex);
+  };
+
+  const getStepContent = (stepIndex: number) => {
+    // If this step is completed (before active step), show preview with edit button
+    if (stepIndex < activeStep) {
+      return (
+        <StepPreview
+          step={stepIndex}
+          watch={watch}
+          images={images}
+          features={features}
+          amenities={amenities}
+          onEdit={() => handleEditStep(stepIndex)}
+          showEditButton={true}
+        />
+      );
     }
+
+    // If this is the current active step, show the form content
+    if (stepIndex === activeStep) {
+      // Show previews of all completed steps (all steps before current step)
+      const completedSteps = Array.from({ length: activeStep }, (_, i) => i);
+
+      const stepContent = (() => {
+        switch (stepIndex) {
+          case 0:
+            return <BasicInfoSection control={control} errors={errors} onNext={handleNext} isLastStep={stepIndex === steps.length - 1} />;
+          case 1:
+            return <PricingFinancialSection control={control} errors={errors} watch={watch} onNext={handleNext} isLastStep={stepIndex === steps.length - 1} />;
+          case 2:
+            return <PropertyDetailsSection control={control} errors={errors} watch={watch} onNext={handleNext} isLastStep={stepIndex === steps.length - 1} />;
+          case 3:
+            return <ConstructionSection control={control} onNext={handleNext} isLastStep={stepIndex === steps.length - 1} />;
+          case 4:
+            return <LocationSection control={control} errors={errors} onNext={handleNext} isLastStep={stepIndex === steps.length - 1} />;
+          case 5:
+            return (
+              <FeaturesAmenitiesSection
+                features={features}
+                amenities={amenities}
+                newAmenity={newAmenity}
+                onNewAmenityChange={setNewAmenity}
+                onAddAmenity={handleAddAmenity}
+                onRemoveAmenity={handleRemoveAmenity}
+                onToggleFeature={handleToggleFeature}
+                onKeyDown={handleKeyDown}
+                onNext={handleNext}
+                isLastStep={stepIndex === steps.length - 1}
+              />
+            );
+          case 6:
+            return (
+              <MediaSection
+                control={control}
+                errors={errors}
+                images={images}
+                newImage={newImage}
+                onNewImageChange={setNewImage}
+                onAddImage={handleAddImage}
+                onRemoveImage={handleRemoveImage}
+                onSetImages={(newImages) => setValue("images", newImages)}
+                uploadError={uploadError}
+                uploadLoading={uploadLoading}
+                uploadSuccess={uploadSuccess}
+                onSetUploadError={setUploadError}
+                onSetUploadLoading={setUploadLoading}
+                onSetUploadSuccess={setUploadSuccess}
+                onKeyDown={handleKeyDown}
+                onNext={handleNext}
+                isLastStep={stepIndex === steps.length - 1}
+              />
+            );
+          case 7:
+            return (
+              <ReviewPublishSection
+                control={control}
+                watch={watch}
+                images={images}
+                onSubmit={handleSubmit(onSubmitForm)}
+                loading={loading}
+                isEditMode={isEditMode}
+              />
+            );
+          default:
+            return null;
+        }
+      })();
+
+      return (
+        <Box>
+          {/* Show previews of all completed steps */}
+          {completedSteps.length > 0 && (
+            <Box sx={{ mb: 3 }}>
+              {completedSteps.map((completedStep) => (
+                <StepPreview
+                  key={completedStep}
+                  step={completedStep}
+                  watch={watch}
+                  images={images}
+                  features={features}
+                  amenities={amenities}
+                  onEdit={() => handleEditStep(completedStep)}
+                  showEditButton={true}
+                />
+              ))}
+            </Box>
+          )}
+          {stepContent}
+        </Box>
+      );
+    }
+
+    // If step is not reached yet, show nothing or a placeholder
+    return (
+      <Box sx={{ py: 2 }}>
+        <Typography variant="body2" color="text.disabled" textAlign="center">
+          Complete previous steps to unlock this section
+        </Typography>
+      </Box>
+    );
   };
 
 
@@ -438,7 +516,7 @@ export function PropertyForm({
         />
       </Box>
 
-      {/* Navigation Buttons */}
+      {/* Back and Cancel Buttons */}
       <Paper
         elevation={0}
         sx={{
@@ -455,61 +533,21 @@ export function PropertyForm({
           flexWrap: "wrap",
         }}
       >
-        <Box sx={{ display: "flex", gap: 2, flex: 1 }}>
-          <Button
-            disabled={activeStep === 0}
-            onClick={handleBack}
-            variant="outlined"
-            startIcon={<ArrowBackIcon />}
-            sx={{
-              minWidth: 120,
-              transition: "all 0.2s ease-in-out",
-              "&:hover": {
-                transform: "translateX(-2px)",
-              },
-            }}
-          >
-            Back
-          </Button>
-
-          {activeStep < steps.length - 1 ? (
-            <Button
-              variant="contained"
-              onClick={handleNext}
-              endIcon={<ArrowForwardIcon />}
-              sx={{
-                minWidth: 120,
-                transition: "all 0.2s ease-in-out",
-                "&:hover": {
-                  transform: "translateX(2px)",
-                  boxShadow: 4,
-                },
-              }}
-            >
-              Next
-            </Button>
-          ) : (
-            <Button
-              type="submit"
-              variant="contained"
-              disabled={loading}
-              startIcon={loading ? <CircularProgress size={20} /> : <CheckCircleIcon />}
-              sx={{
-                minWidth: 180,
-                transition: "all 0.2s ease-in-out",
-                "&:hover": {
-                  transform: "translateY(-2px)",
-                  boxShadow: 4,
-                },
-                "&:disabled": {
-                  opacity: 0.6,
-                },
-              }}
-            >
-              {loading ? (isEditMode ? "Updating..." : "Creating...") : (isEditMode ? "Update Property" : "Create Property")}
-            </Button>
-          )}
-        </Box>
+        <Button
+          disabled={activeStep === 0}
+          onClick={handleBack}
+          variant="outlined"
+          startIcon={<ArrowBackIcon />}
+          sx={{
+            minWidth: 120,
+            transition: "all 0.2s ease-in-out",
+            "&:hover": {
+              transform: "translateX(-2px)",
+            },
+          }}
+        >
+          Back
+        </Button>
 
         <Button
           onClick={onCancel}

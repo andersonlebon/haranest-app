@@ -1,5 +1,6 @@
 import React from "react";
-import { Box, Grid, Card, CardContent, Typography, Divider, Switch, FormControlLabel } from "@mui/material";
+import { Box, Grid, Card, CardContent, Typography, Divider, Switch, FormControlLabel, Button } from "@mui/material";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { Controller, Control, UseFormWatch } from "react-hook-form";
 import { PropertyFormValues } from "@/db/validations/properties.validation";
 
@@ -7,9 +8,12 @@ interface ReviewPublishSectionProps {
   control: Control<PropertyFormValues>;
   watch: UseFormWatch<PropertyFormValues>;
   images: string[];
+  onSubmit?: () => void;
+  loading?: boolean;
+  isEditMode?: boolean;
 }
 
-export function ReviewPublishSection({ control, watch, images }: ReviewPublishSectionProps) {
+export function ReviewPublishSection({ control, watch, images, onSubmit, loading, isEditMode }: ReviewPublishSectionProps) {
   return (
     <Box sx={{ mt: 2 }}>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
@@ -131,6 +135,32 @@ export function ReviewPublishSection({ control, watch, images }: ReviewPublishSe
           />
         </Grid>
       </Grid>
+          {onSubmit && (
+        <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            variant="contained"
+            disabled={loading}
+            startIcon={loading ? <CheckCircleIcon /> : <CheckCircleIcon />}
+            onClick={(e) => {
+              e.preventDefault();
+              onSubmit();
+            }}
+            sx={{
+              minWidth: 180,
+              transition: "all 0.2s ease-in-out",
+              "&:hover": {
+                transform: "translateY(-2px)",
+                boxShadow: 4,
+              },
+              "&:disabled": {
+                opacity: 0.6,
+              },
+            }}
+          >
+            {loading ? (isEditMode ? "Updating..." : "Creating...") : (isEditMode ? "Update Property" : "Create Property")}
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 }

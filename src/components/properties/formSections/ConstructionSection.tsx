@@ -1,14 +1,17 @@
 import React from "react";
-import { Box, Grid, TextField, MenuItem, Typography } from "@mui/material";
+import { Box, Grid, TextField, MenuItem, Typography, Button } from "@mui/material";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Controller, Control } from "react-hook-form";
 import { PropertyFormValues } from "@/db/validations/properties.validation";
 import { structureTypes, roofingTypes, exteriorMaterials } from "@/utils/constants";
 
 interface ConstructionSectionProps {
   control: Control<PropertyFormValues>;
+  onNext?: () => void;
+  isLastStep?: boolean;
 }
 
-export function ConstructionSection({ control }: ConstructionSectionProps) {
+export function ConstructionSection({ control, onNext, isLastStep }: ConstructionSectionProps) {
   return (
     <Box sx={{ mt: 2 }}>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
@@ -90,6 +93,25 @@ export function ConstructionSection({ control }: ConstructionSectionProps) {
           />
         </Grid>
       </Grid>
+      {onNext && !isLastStep && (
+        <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            variant="contained"
+            onClick={onNext}
+            endIcon={<ArrowForwardIcon />}
+            sx={{
+              minWidth: 120,
+              transition: "all 0.2s ease-in-out",
+              "&:hover": {
+                transform: "translateX(2px)",
+                boxShadow: 4,
+              },
+            }}
+          >
+            Next
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 }
