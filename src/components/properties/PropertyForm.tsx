@@ -100,6 +100,7 @@ export function PropertyForm({
   const { profile } = useAuth();
   const isEditMode = !!property;
   const [activeStep, setActiveStep] = useState(0);
+  const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [newAmenity, setNewAmenity] = useState("");
   const [newImage, setNewImage] = useState("");
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -270,6 +271,8 @@ export function PropertyForm({
       }
     }
 
+    // Mark current step as completed before moving to next
+    setCompletedSteps((prev) => new Set([...prev, activeStep]));
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
@@ -369,22 +372,7 @@ export function PropertyForm({
   };
 
   const getStepContent = (stepIndex: number) => {
-    // If this step is completed (before active step), show preview with edit button
-    if (stepIndex < activeStep) {
-      return (
-        <StepPreview
-          step={stepIndex}
-          watch={watch}
-          images={images}
-          features={features}
-          amenities={amenities}
-          onEdit={() => handleEditStep(stepIndex)}
-          showEditButton={true}
-        />
-      );
-    }
-
-    // If this is the current active step, show the form content
+    // If this is the current active step, show the form content (even if it was previously completed)
     if (stepIndex === activeStep) {
       const stepContent = (() => {
         switch (stepIndex) {
@@ -452,6 +440,21 @@ export function PropertyForm({
       })();
 
       return stepContent;
+    }
+
+    // If this step is completed (in completedSteps set) but not active, show preview with edit button
+    if (completedSteps.has(stepIndex)) {
+      return (
+        <StepPreview
+          step={stepIndex}
+          watch={watch}
+          images={images}
+          features={features}
+          amenities={amenities}
+          onEdit={() => handleEditStep(stepIndex)}
+          showEditButton={true}
+        />
+      );
     }
 
     // If step is not reached yet, show nothing or a placeholder
@@ -555,7 +558,7 @@ export function PropertyForm({
       >
         <Stepper activeStep={activeStep} orientation="vertical">
           {steps.map((step, index) => (
-            <Step key={step.label} completed={index < activeStep}>
+            <Step key={step.label} completed={completedSteps.has(index)}>
               <StepLabel
                 StepIconComponent={() => (
                   <Box
@@ -566,17 +569,15 @@ export function PropertyForm({
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      bgcolor: index < activeStep 
-                        ? "primary.main" 
-                        : index === activeStep 
+                      bgcolor: completedSteps.has(index) || index === activeStep
                         ? "primary.main" 
                         : "action.disabledBackground",
-                      color: index <= activeStep ? "primary.contrastText" : "text.disabled",
+                      color: completedSteps.has(index) || index === activeStep ? "primary.contrastText" : "text.disabled",
                       fontWeight: 600,
                       transition: "all 0.2s ease-in-out",
                     }}
                   >
-                    {index < activeStep ? (
+                    {completedSteps.has(index) ? (
                       <CheckCircleIcon />
                     ) : (
                       <Box sx={{ color: "inherit" }}>{step.icon}</Box>
@@ -592,7 +593,7 @@ export function PropertyForm({
                 </Typography>
               </StepLabel>
               {/* Show preview for completed steps outside StepContent */}
-              {index < activeStep && (
+              {completedSteps.has(index) && index !== activeStep && (
                 <Box
                   sx={{
                     ml: 5,
