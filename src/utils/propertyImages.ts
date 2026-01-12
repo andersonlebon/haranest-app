@@ -1,10 +1,10 @@
 import { API_URL } from '@/config';
 
 /**
- * Upload property images via API route to Supabase Storage and return their public URLs
+ * Upload property files (images and videos) via API route to Supabase Storage and return their public URLs
  * This uses a server-side API route to handle authentication and bypass RLS policies
  */
-export async function uploadPropertyImages(files: File[], folder?: string): Promise<string[]> {
+export async function uploadPropertyFiles(files: File[], folder?: string): Promise<string[]> {
   if (!files || files.length === 0) return [];
   
   try {
@@ -34,14 +34,22 @@ export async function uploadPropertyImages(files: File[], folder?: string): Prom
     // If there are warnings (partial failures), log them but still return URLs
     if (data.warnings) {
       console.warn("Upload warnings:", data.warnings);
-  }
-  
+    }
+    
     return data.urls || [];
   } catch (error) {
-    console.error('Error uploading images:', error);
+    console.error('Error uploading files:', error);
     throw error instanceof Error 
       ? error 
-      : new Error('Failed to upload images');
+      : new Error('Failed to upload files');
   }
+}
+
+/**
+ * Upload property images via API route to Supabase Storage and return their public URLs
+ * @deprecated Use uploadPropertyFiles instead
+ */
+export async function uploadPropertyImages(files: File[], folder?: string): Promise<string[]> {
+  return uploadPropertyFiles(files, folder);
 }
 

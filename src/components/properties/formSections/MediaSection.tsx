@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Box, Grid, TextField, Button, IconButton, Typography, Alert, CircularProgress, LinearProgress } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import VideocamIcon from "@mui/icons-material/Videocam";
 import ImageUploader from "../ImageUploader";
-import { Controller, Control, FieldErrors } from "react-hook-form";
+import { Controller, Control, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { PropertyFormValues } from "@/db/validations/properties.validation";
-import { uploadPropertyImages } from "@/utils/propertyImages";
+import { uploadPropertyFiles } from "@/utils/propertyImages";
 
 interface MediaSectionProps {
   control: Control<PropertyFormValues>;
   errors: FieldErrors<PropertyFormValues>;
+  setValue: UseFormSetValue<PropertyFormValues>;
+  watch: UseFormWatch<PropertyFormValues>;
   images: string[];
   newImage: string;
   onNewImageChange: (value: string) => void;
@@ -31,6 +34,8 @@ interface MediaSectionProps {
 export function MediaSection({
   control,
   errors,
+  setValue,
+  watch,
   images,
   newImage,
   onNewImageChange,
@@ -47,6 +52,8 @@ export function MediaSection({
   onNext,
   isLastStep,
 }: MediaSectionProps) {
+  const videoInputRef = useRef<HTMLInputElement | null>(null);
+
   const handleFileUpload = async (files: File[]) => {
     if (!files || files.length === 0) return;
     
@@ -55,7 +62,7 @@ export function MediaSection({
     onSetUploadLoading(true);
     
     try {
-      const uploadedUrls = await uploadPropertyImages(files);
+      const uploadedUrls = await uploadPropertyFiles(files);
       if (uploadedUrls.length > 0) {
         onSetImages([...images, ...uploadedUrls]);
         
@@ -81,9 +88,91 @@ export function MediaSection({
     }
   };
 
+  const handleVideoUpload = async (file: File) => {
+    if (!file) return;
+    
+    onSetUploadError(null);
+    onSetUploadSuccess(false);
+    onSetUploadLoading(true);
+    
+    try {
+      const uploadedUrls = await uploadPropertyFiles([file]);
+      if (uploadedUrls.length > 0 && uploadedUrls[0]) {
+        setValue("videoPreviewUrl", uploadedUrls[0]);
+        onSetUploadSuccess(true);
+        setTimeout(() => onSetUploadSuccess(false), 3000);
+      } else {
+        onSetUploadError("Video upload failed. Please check your connection and try again.");
+      }
+    } catch (e: unknown) {
+      const errorMessage = e instanceof Error 
+        ? e.message 
+        : "Failed to upload video. Please check your connection and try again.";
+      onSetUploadError(errorMessage);
+      console.error("Error uploading video:", e);
+    } finally {
+      onSetUploadLoading(false);
+      if (videoInputRef.current) {
+        videoInputRef.current.value = "";
+      }
+    }
+  };
+
   return (
     <Box sx={{ mt: 2 }}>
       <Box sx={{ mb: 3 }}>
+        <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 2, color: "text.primary" }}>
+          Video Preview
+        </Typography>
+        
+        {/* Video File Upload */}
+        <Box
+          onClick={() => videoInputRef.current?.click()}
+          sx={{
+            border: "2px dashed",
+            borderColor: "divider",
+            borderRadius: 2,
+            p: 3,
+            mb: 2,
+            cursor: "pointer",
+            transition: "all 0.2s ease-in-out",
+            bgcolor: "background.paper",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 1,
+            "&:hover": {
+              borderColor: "primary.main",
+              bgcolor: "action.hover",
+            },
+          }}
+        >
+          <input
+            ref={videoInputRef}
+            type="file"
+            accept="video/*"
+            onChange={(e) => {
+              if (e.target.files && e.target.files[0]) {
+                handleVideoUpload(e.target.files[0]);
+              }
+            }}
+            style={{ display: "none" }}
+          />
+          <VideocamIcon sx={{ fontSize: 36, color: "text.secondary" }} />
+          <Typography variant="body2" color="text.secondary" textAlign="center">
+            Click to upload a video file
+          </Typography>
+          <Typography variant="caption" color="text.disabled" textAlign="center">
+            Supports: MP4, MOV, AVI, WEBM (max 100MB)
+          </Typography>
+        </Box>
+
+        <Typography variant="body2" color="text.secondary" textAlign="center" sx={{ mb: 2 }}>
+          OR
+        </Typography>
+
+        {/* Video URL Input */}
         <Controller
           name="videoPreviewUrl"
           control={control}
@@ -91,13 +180,72 @@ export function MediaSection({
             <TextField
               {...field}
               label="Video Preview URL"
-              placeholder="https://youtube.com/watch?v=..."
+              placeholder="https://youtube.com/watch?v=... or paste uploaded video URL"
               fullWidth
-              helperText="Optional: Add a video tour or preview link"
+              helperText="Optional: Add a video URL (YouTube, Vimeo, or direct link)"
               error={!!errors.videoPreviewUrl}
             />
           )}
         />
+        
+        {watch("videoPreviewUrl") && (
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="caption" color="text.secondary" display="block" gutterBottom>
+              Current Video:
+            </Typography>
+            <Box
+              sx={{
+                borderRadius: 1,
+                overflow: "hidden",
+                border: "1px solid",
+                borderColor: "divider",
+                mt: 1,
+              }}
+            >
+              {watch("videoPreviewUrl")?.includes("youtube.com") || watch("videoPreviewUrl")?.includes("youtu.be") ? (
+                <Box
+                  component="iframe"
+                  src={
+                    watch("videoPreviewUrl")?.includes("youtu.be")
+                      ? `https://www.youtube.com/embed/${watch("videoPreviewUrl")?.split("/").pop()?.split("?")[0]}`
+                      : `https://www.youtube.com/embed/${watch("videoPreviewUrl")?.split("v=")[1]?.split("&")[0]}`
+                  }
+                  sx={{
+                    width: "100%",
+                    height: 200,
+                    border: "none",
+                  }}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              ) : watch("videoPreviewUrl")?.includes("vimeo.com") ? (
+                <Box
+                  component="iframe"
+                  src={`https://player.vimeo.com/video/${watch("videoPreviewUrl")?.split("/").pop()?.split("?")[0]}`}
+                  sx={{
+                    width: "100%",
+                    height: 200,
+                    border: "none",
+                  }}
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  allowFullScreen
+                />
+              ) : (
+                <Box
+                  component="video"
+                  src={watch("videoPreviewUrl")}
+                  controls
+                  sx={{
+                    width: "100%",
+                    height: 200,
+                    objectFit: "contain",
+                    bgcolor: "black",
+                  }}
+                />
+              )}
+            </Box>
+          </Box>
+        )}
       </Box>
 
       <Box sx={{ mb: 3 }}>
@@ -147,7 +295,7 @@ export function MediaSection({
               onClose={() => onSetUploadSuccess(false)}
               sx={{ borderRadius: 2 }}
             >
-              Images uploaded successfully!
+              Files uploaded successfully!
             </Alert>
           </Box>
         )}

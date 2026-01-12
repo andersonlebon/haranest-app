@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
 
     if (authError || !user) {
       return NextResponse.json(
-        { error: "Unauthorized. Please log in to upload images." },
+        { error: "Unauthorized. Please log in to upload files." },
         { status: 401 }
       );
     }
@@ -50,16 +50,19 @@ export async function POST(req: NextRequest) {
     const errors: string[] = [];
 
     for (const file of files) {
-      // Validate file type
-      if (!file.type.startsWith("image/")) {
-        errors.push(`${file.name}: Not an image file`);
-        continue; // Skip non-image files
+      // Validate file type - accept both images and videos
+      const isImage = file.type.startsWith("image/");
+      const isVideo = file.type.startsWith("video/");
+      
+      if (!isImage && !isVideo) {
+        errors.push(`${file.name}: Not an image or video file`);
+        continue; // Skip non-image/video files
       }
 
       // Generate unique filename
-      const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+      const ext = file.name.split(".").pop()?.toLowerCase() || (isVideo ? "mp4" : "jpg");
       const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-      const dir = folder || "properties";
+      const dir = folder || (isVideo ? "properties/videos" : "properties");
       const path = `${dir}/${filename}`;
 
       try {
@@ -103,7 +106,7 @@ export async function POST(req: NextRequest) {
     if (urls.length === 0) {
       return NextResponse.json(
         { 
-          error: "Failed to upload any images",
+          error: "Failed to upload any files",
           details: errors.length > 0 ? errors : ["Unknown error occurred"],
         },
         { status: 500 }
@@ -115,7 +118,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { 
           urls,
-          warnings: `Some images failed to upload: ${errors.join(", ")}`,
+          warnings: `Some files failed to upload: ${errors.join(", ")}`,
         },
         { status: 200 }
       );

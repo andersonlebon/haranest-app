@@ -406,6 +406,8 @@ export function PropertyForm({
               <MediaSection
                 control={control}
                 errors={errors}
+                setValue={setValue}
+                watch={watch}
                 images={images}
                 newImage={newImage}
                 onNewImageChange={setNewImage}
