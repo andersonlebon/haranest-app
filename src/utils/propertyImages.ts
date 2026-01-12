@@ -34,8 +34,8 @@ export async function uploadPropertyImages(files: File[], folder?: string): Prom
     // If there are warnings (partial failures), log them but still return URLs
     if (data.warnings) {
       console.warn("Upload warnings:", data.warnings);
-    }
-    
+  }
+  
     return data.urls || [];
   } catch (error) {
     console.error('Error uploading images:', error);

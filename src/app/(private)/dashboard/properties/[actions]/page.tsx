@@ -93,9 +93,9 @@ export default function PropertyActionsPage() {
       } else {
         // Create mode
         const created = await createProperty(formData as any);
-        setProperties(prev => [created as unknown as Property, ...prev]);
+      setProperties(prev => [created as unknown as Property, ...prev]);
         setSnackbar({ open: true, message: "Property created successfully!", severity: "success" });
-        router.push("/dashboard/properties/list");
+      router.push("/dashboard/properties/list");
       }
     } catch (e: any) {
       setSnackbar({ 
@@ -162,19 +162,19 @@ export default function PropertyActionsPage() {
                     fontWeight={600}
                     sx={{ mb: 3, color: "text.primary" }}
                   >
-                    Select a Property to Edit
+                  Select a Property to Edit
                   </Typography>
                   {loading ? (
                     <Box display="flex" justifyContent="center" alignItems="center" minHeight={200}>
                       <CircularProgress />
                     </Box>
                   ) : (
-                    <PropertyList 
-                      properties={properties}
-                      loading={loading}
-                      onPropertySelect={handlePropertySelect}
-                      selectedProperty={selectedProperty}
-                    />
+                <PropertyList 
+                  properties={properties}
+                  loading={loading}
+                  onPropertySelect={handlePropertySelect}
+                  selectedProperty={selectedProperty}
+                />
                   )}
                 </Paper>
               </Grid>
@@ -196,7 +196,7 @@ export default function PropertyActionsPage() {
                     fontWeight={600}
                     sx={{ mb: 3, color: "text.primary" }}
                   >
-                    Edit Property
+                  Edit Property
                   </Typography>
                 {selectedProperty ? (
                   <PropertyForm 
@@ -217,7 +217,7 @@ export default function PropertyActionsPage() {
                         Select a property to edit
                       </Typography>
                     </Box>
-                  )}
+                )}
                 </Paper>
               </Grid>
             </Grid>
@@ -275,22 +275,22 @@ export default function PropertyActionsPage() {
                   <CircularProgress />
                 </Box>
               ) : (
-                <PropertyList 
-                  properties={properties}
-                  loading={loading}
-                  onPropertySelect={handlePropertySelect}
-                  showActions={true}
-                  onDelete={async (id: number) => {
-                    try {
-                      await deleteProperty(id);
-                      setProperties(prev => prev.filter(p => p.id !== id));
+              <PropertyList 
+                properties={properties}
+                loading={loading}
+                onPropertySelect={handlePropertySelect}
+                showActions={true}
+                onDelete={async (id: number) => {
+                  try {
+                    await deleteProperty(id);
+                    setProperties(prev => prev.filter(p => p.id !== id));
                       setSnackbar({ open: true, message: "Property deleted successfully!", severity: "success" });
-                    } catch (e) {
-                      console.error(e);
+                  } catch (e) {
+                    console.error(e);
                       setSnackbar({ open: true, message: "Failed to delete property", severity: "error" });
-                    }
-                  }}
-                />
+                  }
+                }}
+              />
               )}
             </Paper>
           </Container>
@@ -408,7 +408,7 @@ export default function PropertyActionsPage() {
               <Button
                 variant="contained"
                 startIcon={<ArrowBackIcon />}
-                onClick={() => router.push("/dashboard/properties/list")}
+              onClick={() => router.push("/dashboard/properties/list")}
                 sx={{
                   borderRadius: 2,
                   textTransform: "none",

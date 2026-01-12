@@ -429,6 +429,8 @@ export function PropertyForm({
                 control={control}
                 watch={watch}
                 images={images}
+                features={features}
+                amenities={amenities}
                 onSubmit={handleSubmit(onSubmitForm)}
                 loading={loading}
                 isEditMode={isEditMode}
