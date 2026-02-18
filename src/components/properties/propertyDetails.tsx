@@ -182,7 +182,7 @@ export default function PropertyDetails({ property }: Props) {
 					</Box>
 
 					{/* Reviews */}
-					<PropertyReviews />
+					<PropertyReviews propertyId={property.id}/>
 				</Box>
 
 				{/* Right Column - Host Info & Map */}

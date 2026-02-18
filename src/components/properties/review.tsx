@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Box,
   Typography,
@@ -11,67 +11,58 @@ import {
   Stack,
   Link,
 } from '@mui/material';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { propertyReviewSchema, type PropertyReviewFormValues } from '@/db/validations/propertyReviews.validation';
 import { useGetReviews, useCreateReview } from '@/hooks/useReviews';
-import type { PropertyReviewFormValues } from '@/db/validations/propertyReviews.validation';
+import { CreateReviewDto } from '@/db/dtos';
 
 interface PropertyReviewsProps {
   propertyId: number;
 }
 
 export default function PropertyReviews({ propertyId }: PropertyReviewsProps) {
-  const [newReview, setNewReview] = useState<{
-    name: string;
-    location: string;
-    review: string;
-    rating: number;
-  }>({
-    name: '',
-    location: '',
-    review: '',
-    rating: 0,
-  });
-
   // Fetch reviews using the custom hook
   const {
     data: paginatedReviews,
-    isLoading: loading,
-    refetch,
+    isPending: loading,
   } = useGetReviews(propertyId);
+  const { mutate: createPropertyReview, isPending: isCreating } = useCreateReview()
 
-  // Create review using the custom mutation hook
-  const createReviewMutation = useCreateReview(propertyId);
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors, isSubmitting },
+    watch,
+  } = useForm<PropertyReviewFormValues>({
+    resolver: zodResolver(propertyReviewSchema),
+    defaultValues: {
+      name: '',
+      location: '',
+      comment: '',
+      rating: 0,
+    },
+  });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setNewReview((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleRatingChange = (
-    _e: React.SyntheticEvent<Element, Event>,
-    value: number | null,
-  ) => {
-    setNewReview((prev) => ({ ...prev, rating: value || 0 }));
-  };
-
-  const handleSubmit = async () => {
-    if (!propertyId) return;
-    const payload: PropertyReviewFormValues = {
-      name: newReview.name.trim(),
-      location: newReview.location.trim(),
-      comment: newReview.review.trim(),
-      rating: newReview.rating,
-    };
-    try {
-      await createReviewMutation.mutateAsync(payload as any); // lint: real payload type (see below)
-      setNewReview({ name: '', location: '', review: '', rating: 0 });
-      refetch();
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error('Erreur handleSubmit:', err);
-    }
+  const onSubmit = async (data: PropertyReviewFormValues) => {
+    const SubmittedData= { ...data, propertyId } as CreateReviewDto
+    
+    createPropertyReview(
+      SubmittedData,
+      {
+        onSuccess: () => {
+          reset();
+        },
+      }
+    );
   };
 
   const reviews = paginatedReviews?.data ?? [];
+
+  // For disabling submit button
+  const watchedFields = watch(['name', 'comment', 'rating']);
 
   return (
     <Box>
@@ -81,13 +72,12 @@ export default function PropertyReviews({ propertyId }: PropertyReviewsProps) {
       </Typography>
       <Grid container spacing={2}>
         {reviews.length === 0 && !loading && (
-          <Grid size={{xs: 12}}>
+          <Grid size={{ xs: 12 }}>
             <Typography color="text.secondary">No reviews yet.</Typography>
           </Grid>
         )}
         {reviews.map((review) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} 
-           key={review.id}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={review.id}>
             <Box>
               <Stack direction="row" spacing={2} alignItems="center" mb={1}>
                 <Avatar>{review.name[0]}</Avatar>
@@ -123,33 +113,38 @@ export default function PropertyReviews({ propertyId }: PropertyReviewsProps) {
       <Typography variant="h6" gutterBottom>
         Add a Review
       </Typography>
-      <Box component="form" noValidate autoComplete="off">
+      <Box
+        component="form"
+        noValidate
+        autoComplete="off"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <Grid container spacing={2}>
           <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               fullWidth
               label="Name"
-              name="name"
-              value={newReview.name}
-              onChange={handleInputChange}
+              {...register('name')}
+              error={!!errors.name}
+              helperText={errors.name?.message}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               fullWidth
               label="Location"
-              name="location"
-              value={newReview.location}
-              onChange={handleInputChange}
+              {...register('location')}
+              error={!!errors.location}
+              helperText={errors.location?.message}
             />
           </Grid>
           <Grid size={{ xs: 12 }}>
             <TextField
               fullWidth
               label="Review"
-              name="review"
-              value={newReview.review}
-              onChange={handleInputChange}
+              {...register('comment')}
+              error={!!errors.comment}
+              helperText={errors.comment?.message}
               multiline
               rows={4}
             />
@@ -158,22 +153,37 @@ export default function PropertyReviews({ propertyId }: PropertyReviewsProps) {
             <Typography variant="body1" gutterBottom>
               Rating
             </Typography>
-            <Rating
+            <Controller
               name="rating"
-              value={newReview.rating}
-              onChange={handleRatingChange}
+              control={control}
+              render={({ field }) => (
+                <Rating
+                  value={field.value}
+                  onChange={(_e, value) => field.onChange(value || 0)}
+                  name="rating"
+                />
+              )}
             />
+            {errors.rating && (
+              <Typography
+                variant="caption"
+                color="error"
+                sx={{ display: 'block', marginTop: 0.5 }}
+              >
+                {errors.rating.message}
+              </Typography>
+            )}
           </Grid>
           <Grid size={{ xs: 12 }}>
             <Button
+              type="submit"
               variant="contained"
               color="primary"
-              onClick={handleSubmit}
               disabled={
-                !newReview.name ||
-                !newReview.review ||
-                newReview.rating === 0 ||
-                createReviewMutation.isLoading ||
+                !watchedFields[0] ||
+                !watchedFields[1] ||
+                watchedFields[2] === 0 ||
+                isSubmitting ||
                 loading
               }
             >
