@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -11,71 +11,67 @@ import {
   Stack,
   Link,
 } from '@mui/material';
-import { reviewService } from '@/services/review.service';
+import { useGetReviews, useCreateReview } from '@/hooks/useReviews';
+import type { PropertyReviewFormValues } from '@/db/validations/propertyReviews.validation';
 
-interface ReviewItem {
-  id: number;
-  name: string;
-  location?: string;
-  rating: number;
-  comment: string;
-  createdAt: string;
+interface PropertyReviewsProps {
+  propertyId: number;
 }
 
-export default function PropertyReviews() {
-  const [items, setItems] = useState<ReviewItem[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [newReview, setNewReview] = useState({
+export default function PropertyReviews({ propertyId }: PropertyReviewsProps) {
+  const [newReview, setNewReview] = useState<{
+    name: string;
+    location: string;
+    review: string;
+    rating: number;
+  }>({
     name: '',
     location: '',
     review: '',
     rating: 0,
   });
 
+  // Fetch reviews using the custom hook
+  const {
+    data: paginatedReviews,
+    isLoading: loading,
+    refetch,
+  } = useGetReviews(propertyId);
+
+  // Create review using the custom mutation hook
+  const createReviewMutation = useCreateReview(propertyId);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewReview((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleRatingChange = (e: React.ChangeEvent<{}>, value: number | null) => {
+  const handleRatingChange = (
+    _e: React.SyntheticEvent<Element, Event>,
+    value: number | null,
+  ) => {
     setNewReview((prev) => ({ ...prev, rating: value || 0 }));
   };
 
-  useEffect(() => {
-    fetchReviews();
-  }, []);
-
-  const fetchReviews = async () => {
-    try {
-      setLoading(true);
-      const pathParts = window.location.pathname.split('/');
-      const id = pathParts[pathParts.length - 1];
-      const data = await reviewService.getReviews(id);
-      setItems(data || []);
-    } catch (err) {
-      console.error('Erreur fetchReviews:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleSubmit = async () => {
-    const pathParts = window.location.pathname.split('/');
-    const id = pathParts[pathParts.length - 1];
-    const payload = {
+    if (!propertyId) return;
+    const payload: PropertyReviewFormValues = {
       name: newReview.name.trim(),
       location: newReview.location.trim(),
       comment: newReview.review.trim(),
       rating: newReview.rating,
     };
     try {
-      await reviewService.createReview(id, payload);
+      await createReviewMutation.mutateAsync(payload as any); // lint: real payload type (see below)
       setNewReview({ name: '', location: '', review: '', rating: 0 });
-      fetchReviews();
+      refetch();
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error('Erreur handleSubmit:', err);
     }
   };
+
+  const reviews = paginatedReviews?.data ?? [];
 
   return (
     <Box>
@@ -84,7 +80,12 @@ export default function PropertyReviews() {
         Reviews
       </Typography>
       <Grid container spacing={2}>
-        {items.map((review) => (
+        {reviews.length === 0 && !loading && (
+          <Grid size={{xs: 12}}>
+            <Typography color="text.secondary">No reviews yet.</Typography>
+          </Grid>
+        )}
+        {reviews.map((review) => (
           <Grid size={{ xs: 12, sm: 6, md: 4 }} 
            key={review.id}>
             <Box>
@@ -115,8 +116,6 @@ export default function PropertyReviews() {
           View more reviews
         </Link>
       </Box>
-      
-
 
       <Divider sx={{ my: 3 }} />
 
@@ -170,7 +169,13 @@ export default function PropertyReviews() {
               variant="contained"
               color="primary"
               onClick={handleSubmit}
-              disabled={!newReview.name || !newReview.review || newReview.rating === 0}
+              disabled={
+                !newReview.name ||
+                !newReview.review ||
+                newReview.rating === 0 ||
+                createReviewMutation.isLoading ||
+                loading
+              }
             >
               Submit Review
             </Button>
