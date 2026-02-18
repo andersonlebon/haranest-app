@@ -53,7 +53,6 @@ export class PropertyRepository {
     });
   }
 
-
   static async findById(id: number) {
     const result = await db
       .select()
