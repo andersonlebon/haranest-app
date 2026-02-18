@@ -1,4 +1,4 @@
-import { PaginatedResponse, PaginationParams } from "@/types/api";
+import { PaginatedResponse, PaginationParams } from "@/types";
 import { PropertyResponseDto, CreatePropertyDto, UpdatePropertyDto } from "@/db/dtos/properties.dto";
 import axiosClient from "@/lib/axiosClient";
 
