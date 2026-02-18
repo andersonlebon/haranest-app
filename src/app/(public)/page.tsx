@@ -30,7 +30,7 @@ const DEFAULT_FILTERS: PropertyParams = {
 	features: [],
 	propertyType: '',
 	page: 1,
-	perPage: 1,
+	perPage: 8,
 };
 
 export default function PropertyListPage() {

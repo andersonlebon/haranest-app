@@ -26,6 +26,7 @@ interface Props {
 }
 
 export const PROPERTY_TYPES = [
+  { label: 'All', value: '', icon: '🏠' },
   { label: 'Apartment', value: 'apartment', icon: '🏢' },
   { label: 'House', value: 'house', icon: '🏠' },
   { label: 'Condo', value: 'condo', icon: '🏬' },
@@ -113,9 +114,6 @@ export default function TopFilters({
                   }}
                   sx={(theme) => ({
                     borderRadius: 3,
-                    border: isSelected 
-                      ? `2px solid ${theme.palette.primary.main}` 
-                      : `1px solid ${theme.palette.divider}`,
                     textAlign: 'center',
                     width: 90,
                     height: 90,
@@ -123,8 +121,9 @@ export default function TopFilters({
                     bgcolor: isSelected 
                       ? theme.palette.mode === 'dark' 
                         ? theme.palette.primary.dark 
-                        : theme.palette.primary.light 
+                        : '#b8b8b8'
                       : 'background.paper',
+                    transform: isSelected ? 'translateY(-2px)' : 'none',
                     boxShadow: isSelected 
                       ? theme.shadows[4] 
                       : theme.shadows[1],
@@ -134,18 +133,14 @@ export default function TopFilters({
                       boxShadow: isSelected 
                         ? theme.shadows[8] 
                         : theme.shadows[4],
-                      bgcolor: isSelected 
-                        ? theme.palette.mode === 'dark' 
-                          ? theme.palette.primary.dark 
-                          : theme.palette.primary.light 
-                        : 'action.hover',
+                      
                     },
                   })}
                 >
                   <span style={{ fontSize: 32, lineHeight: 1 }}>
                     {type.icon}
                   </span>
-                  <Typography fontSize={11} fontWeight={600} color={isSelected ? 'primary.main' : 'text.primary'}>
+                  <Typography fontSize={11} fontWeight={600} color={isSelected ? 'primary.secondary' : 'text.primary'}>
                     {type.label}
                   </Typography>
                 </Stack>

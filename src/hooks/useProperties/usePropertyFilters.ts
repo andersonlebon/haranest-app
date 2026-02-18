@@ -29,8 +29,8 @@ export function usePropertyFilters() {
   const [filters, setFilters] = useState<PropertyFilters>(DEFAULT_FILTERS);
   const [isLoading, setIsLoading] = useState(false);
   
- 
-  const debouncedSearch = useDebounce(filters.search, 500);
+  // Debounce search input by 5 seconds before applying it to the filters
+  const debouncedSearch = useDebounce(filters.search, 5000);
   const debouncedFilters = { ...filters, search: debouncedSearch };
 
  

@@ -4,12 +4,13 @@ import { propertySchema } from "@/db/validations/properties.validation";
 import { createErrorResponse } from "@/lib/api/utils";
 
 interface RouteParams {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export async function GET(_req: NextRequest, { params }: RouteParams) {
   try {
-    const id = Number(params.id);
+    const { id: rawId } = await params;
+    const id = Number(rawId);
 
     if (!id || Number.isNaN(id)) {
       return NextResponse.json(
@@ -35,7 +36,8 @@ export async function GET(_req: NextRequest, { params }: RouteParams) {
 
 export async function PUT(req: NextRequest, { params }: RouteParams) {
   try {
-    const id = Number(params.id);
+    const { id: rawId } = await params;
+    const id = Number(rawId);
 
     if (!id || Number.isNaN(id)) {
       return NextResponse.json(
@@ -64,7 +66,8 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
 
 export async function DELETE(_req: NextRequest, { params }: RouteParams) {
   try {
-    const id = Number(params.id);
+    const { id: rawId } = await params;
+    const id = Number(rawId);
 
     if (!id || Number.isNaN(id)) {
       return NextResponse.json(

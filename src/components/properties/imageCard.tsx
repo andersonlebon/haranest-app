@@ -1,10 +1,14 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   IconButton,
   Chip,
+  Dialog,
+  AppBar,
+  Toolbar,
+  Typography,
 } from '@mui/material';
 import Slider from 'react-slick';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -58,6 +62,9 @@ interface ImageSlideProps {
 }
 
 export default function ImageSlide({ property, page='card' }: ImageSlideProps) {
+  const [fullscreenOpen, setFullscreenOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+
   const settings = {
     dots: false,
     infinite: true,
@@ -67,6 +74,7 @@ export default function ImageSlide({ property, page='card' }: ImageSlideProps) {
     arrows: true,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
+    beforeChange: (_: number, next: number) => setActiveIndex(next),
   };
 
   // Build a safe list of images; fallback to a single placeholder when absent/empty
@@ -77,24 +85,70 @@ export default function ImageSlide({ property, page='card' }: ImageSlideProps) {
   // Detail page: interactive slider with next/prev arrows
   if (page === 'detail') {
     return (
-      <Box sx={{ position: 'relative', borderRadius: 3, overflow: 'hidden' }}>
-        <Slider {...settings}>
-          {imagesToShow.map((img, index) => (
-            <Box
-              key={index}
-              component="img"
-              src={img}
-              alt={property.title}
-              onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/images/house.png'; }}
-              sx={{
-                width: '100%',
-                height: 480,
-                objectFit: 'cover',
-              }}
-            />
-          ))}
-        </Slider>
-      </Box>
+      <>
+        <Box sx={{ position: 'relative', borderRadius: 3, overflow: 'hidden', cursor: 'pointer' }}>
+          <Slider {...settings}>
+            {imagesToShow.map((img, index) => (
+              <Box
+                key={index}
+                component="img"
+                src={img}
+                alt={property.title}
+                onClick={() => {
+                  setActiveIndex(index);
+                  setFullscreenOpen(true);
+                }}
+                onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/images/house.png'; }}
+                sx={{
+                  width: '100%',
+                  height: 480,
+                  objectFit: 'cover',
+                }}
+              />
+            ))}
+          </Slider>
+        </Box>
+
+        <Dialog
+          fullScreen
+          open={fullscreenOpen}
+          onClose={() => setFullscreenOpen(false)}
+        >
+          <AppBar position="relative" color="default" elevation={1}>
+            <Toolbar>
+              <IconButton edge="start" color="inherit" onClick={() => setFullscreenOpen(false)} aria-label="close">
+                <ArrowBackIos fontSize="small" />
+              </IconButton>
+              <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                {property.title}
+              </Typography>
+            </Toolbar>
+          </AppBar>
+
+          <Box sx={{ position: 'relative', width: '100%', height: '100%', bgcolor: 'black' }}>
+            <Slider
+              {...settings}
+              initialSlide={activeIndex}
+            >
+              {imagesToShow.map((img, index) => (
+                <Box
+                  key={index}
+                  component="img"
+                  src={img}
+                  alt={property.title}
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/images/house.png'; }}
+                  sx={{
+                    width: '100%',
+                    height: '100vh',
+                    objectFit: 'contain',
+                    bgcolor: 'black',
+                  }}
+                />
+              ))}
+            </Slider>
+          </Box>
+        </Dialog>
+      </>
     );
   }
 
