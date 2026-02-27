@@ -3,13 +3,12 @@
 import { PaginatedResponse, PaginationParams } from '@/components/shared/types';
 import { SQLWrapper, asc, desc, sql } from 'drizzle-orm';
 import { PgColumn, PgTableWithColumns } from 'drizzle-orm/pg-core';
-import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 export interface QueryOptions<T> {
   where?: SQLWrapper | undefined;
   orderBy?: { column: PgColumn; direction: 'asc' | 'desc' }[];
-  join?: { table: PgTableWithColumns<Record<string, unknown>>; on: SQLWrapper }[];
-  transformResult?: (items: T[]) => T[];
+  join?: { table: PgTableWithColumns<any>; on: SQLWrapper }[];
+  transformResult?: (items: T[]) => any[];
 }
 
 export function validatePaginationParams(params: PaginationParams): {
@@ -29,10 +28,10 @@ export function validatePaginationParams(params: PaginationParams): {
 }
 
 export async function paginateQuery<
-  T extends Record<string, unknown>,
-  TTable extends PgTableWithColumns<Record<string, unknown>>,
+  T extends Record<string, any>,
+  TTable extends PgTableWithColumns<any>,
 >(
-  db: PostgresJsDatabase,
+  db: any,
   table: TTable,
   params: PaginationParams,
   options: QueryOptions<T> = {},
@@ -75,12 +74,12 @@ export async function paginateQuery<
     }
     if (options.orderBy && options.orderBy.length > 0) {
       options.orderBy.forEach(({ column, direction }) => {
-        dataQuery = dataQuery.orderBy(
-          direction === 'desc' ? desc(column) : asc(column)
+        dataQuery = (dataQuery as any).orderBy(
+          direction === 'desc' ? desc(column as any) : asc(column as any)
         );
       });
     }
-    let data = (await dataQuery) as T[];
+    let data = await dataQuery;
 
     if (
       options.transformResult &&
